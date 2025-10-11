@@ -1,0 +1,13 @@
+# Functional Programming notes
+
+# R programming typically does not use explicit iteration (repeated sequence of operations)
+# - instead of coding loops, use R's functional features - helps you make iterative behaviors implicit 
+# - in other words, operations are automatically applied to each item in a data structure 
+# without explicitly specifying the iteration process. 
+# Which makes code more efficient, especially when R runs large data sets.
+
+# Advantages of the functional programming nature of the R language:
+# Clear, compact code
+# fast execution
+# code is simple - less bugs
+# easy transition for parallel programming
