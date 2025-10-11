@@ -1,0 +1,56 @@
+# 1.1 How to run R
+
+# R operates in two modes: "interactive" and "batch"
+# Interactive mode: 
+# - type in commands
+# - R displays results
+# - repeat
+# Batch mode:
+# - does not require interaction with user
+# - useful for production jobs, because you can automate process
+# : ie., when a program must be run periodically, like once a day.
+
+# 1.1.1 Interactive Mode
+# Start R session on Mac:
+# - type R on the command line in Terminal.
+
+# Start R session on Windows:
+# - Click R Icon
+
+# - it spits back a greeting a R prompt (an R prompt is the > sign).
+# - From here, you can execute R commands.
+# - the window that all this coding is viewed in, is called the "R console".
+
+# Example: standard normal distribution (with mean 0 and variance 1).
+# If random variable X has that distribution:
+# - its values - centered around 0, some negative, some positive, averaging in the end to 0.
+
+# make a new random variable Y = |X|.
+# - since we've taken the absolute value, the values of Y will NOT be centered around 0.
+# - mean of Y will be positive.
+
+# Find the mean of Y. Approach based on example of N(0,1) variates.
+
+>mean(abs(rnorm(100)))
+[1] 0.7194236
+
+# 1. - generates 100 random variates
+# 2. - finds the absolute values from these 100 random variates
+# 3. - finds the mean of the absolute values.
+
+# [1] means that in the first line is the first item (useful when there is a lot of output, lots of items spread over many lines)
+# example: two rows of output/ six items in each row -> second row is labeled [7]
+> rnorm(10)
+[1] -0.6427784 -1.0416696 -1.4020476 -0.6718250 -0.9590894 -0.8684650
+[7] -0.5974668 0.6877001 1.3577618 -2.2794378
+
+# there are 10 values in the output
+# label [7] in the second row shows in 0.6877001 is the eighth output item
+
+# you can store R commands in a file.
+# R code file convention: .R or .r
+# if you created a code file called z.R, you can execute the contents of the file by the following command:
+
+> source("z.R")
+
+
