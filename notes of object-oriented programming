@@ -1,5 +1,13 @@
-#an example of a compound command: (I think that means that there is more than one element within the paranthesis?)
+# an example of a compound command: (I think that means that there is more than one element within the paranthesis?)
 nrow(subset(x03,z == 1))
 
-#subset() function takes data frame x03 and grabs all the info stored in variable "z is 1"
-# R is polymorphic => 1 function can be assigned to different types of inputs, which then, the function processes it in the appropriate way. => "generic function"
+# Object-Oriented Programming:
+
+# Statistical regression, regression analysis with SAS or SPSS -> ton of output.
+# But if you call lm() regression function in R, the function returns an object containing all the results.
+
+# subset() function takes data frame x03 and grabs all the info stored in variable "z is 1"
+# R is polymorphic => 1 function can be assigned to different types of inputs, which then, 
+# the function processes it in the appropriate way. => "generic function" (C++ calls a similar concept "virtual function")
+
+
