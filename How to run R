@@ -53,4 +53,24 @@
 
 > source("z.R")
 
+1.1.2 Batch Mode
 
+# automate R sessions
+# ie. Automatically generate a graph without manually launching R and manually executing a script.
+# example of graph-making code in file named z.R
+
+pdf("xh.pdf") # set graphical output file
+hist(rnorm(100)) # generate 100 N(0,1) variates and plot their histogram
+dev.off() # close the graphical output file
+
+# pdf() is a function to tell R that we want the graph we create to be saved in the PDF file xh.pdf
+# rnorm () means "random normal" which generates 100 N(0,1) random variates.
+# hist() to the variates to draw a histogram of these values
+# dev.off() closes the graphical "device" which is xh.pdf - it causes the file to be written to the disk.
+
+# to run the code automatically, without entering R's interactive mode, 
+# - we call R with an operating system shell command
+# - ie. $ prompt commonly used in Linux systems.
+$ R CMD BATCH z.R
+
+# confirm it worked by opening it up the histogram in a PDF viewer.
