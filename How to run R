@@ -74,3 +74,10 @@ dev.off() # close the graphical output file
 $ R CMD BATCH z.R
 
 # confirm it worked by opening it up the histogram in a PDF viewer.
+
+1.2 A First R Session
+# start with a simple data set (R vocabulary refers it to a "vector")
+# This data sethas the numbers 1,2,4 and name it "x"
+> x <- c(1,2,4)
+# R's standard assignment operator is <- and = (but "=" is usually reserved for special situations).
+
