@@ -80,4 +80,73 @@ $ R CMD BATCH z.R
 # This data sethas the numbers 1,2,4 and name it "x"
 > x <- c(1,2,4)
 # R's standard assignment operator is <- and = (but "=" is usually reserved for special situations).
+# - no fixed types associated with variables
+# - here a vector is assigned to x, but might assign somrthing of a different type to it.
+# - c stands for concatenate
+# - here we are concatenating 1,2,4 meaning we are concatenating three one-element vectors that consist of those numbers.
+# - because any number is also considered a one-element vector.
+
+> q <- c(x,x,8)
+# - which sets q to (1,2,4,1,2,4,8)
+# confirm that the data is really in x
+# - by printing the vector to the screen.
+# - by typing its name. 
+# - (if you type any variable name/ expression while in interactive mode, R will print out that variable/ expression)
+> x
+[1] 1 2 4
+# confirmed: x consists of 1,2,4.
+# - individual elements of a vector are accessed via [].
+
+# how to print out third element of x:
+> x[3]
+[1] 4
+# the selector (here it's 3) is called the "index" or "subscript"
+# elements of R vectors are indexed starting from "1", not "0".
+# Subsetting is an operation on vectors.
+# Subsetting example:
+
+> x <- c(1,2,4)
+> x[2:3]
+[1] 2 4
+# the expression x[2:3] refers to subvector of x consisting of elements 2 through 3, which are 2 and 4 here.
+
+# Find the mean and standard deviation of data set:
+> mean(x)
+[1] 2.333333
+> sd(x)
+[1] 1.527525
+# first line's expression is the function call mean(x)
+# the return value is printed automatically, without needing the call to R's print() function.
+# If we want to save ethe computed mean in a variable instead of just printing it to the screen:
+> y <- mean(x)
+# confirm that Y contains the mean of x:
+> y
+[1] 2.333333
+
+# comments valuable for documenting program code, and also useful in interactive sessions, since R records the command history.
+> y # print out y
+[1] 2.333333
+
+# use R's internal data sets, get a list of data sets:
+> data()
+
+# data set called Nile (contains data on the flow of the Nile River)
+# find the mean and standard deviation of this data set:
+
+> mean(Nile)
+[1] 919.35
+> sd(Nile) # sd: standard deviation?
+[1] 169.2275
+
+# Plot histogram of the data:
+> hist(Nile)
+# window pops up with the histogram in it.
+# hist(z,breaks=12) draws a histogram os data set z with 12 bins.
+
+# Quit R by calling the q() function or alternatively pressing CTRL-D in Linux or CMD-D on a Mac:
+> q()
+Save workspace image? [y/n/c]: n
+# asks if you want to save your variables so that you can resume work on it later.
+# selecting y: all objects will load automaticvally next time you run R, and saves session's command history.
+
 
