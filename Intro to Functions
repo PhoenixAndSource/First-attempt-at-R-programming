@@ -1,0 +1,37 @@
+# 1.3 Intro to Functions
+
+# R programming consists of writing functions
+# A function is:
+# - a group of instructions that takes inputs
+# - uses them to compute other values 
+# - returns a result
+
+# example function named oddcount() 
+# - purpose is to count the odd numbers in a vector of integers.
+# - normally we  compose the function code using a text editor and save it in a file,
+# - but in this example, we enter it line by line in R's interactive mode.
+# - then we'll call the function on a couple of test cases.
+
+# counts the number of odd integers in x
+> offcount <- function(x) {
++    k <- 0 # assign 0 to k
++    for (n in x) {
++       if (n %% 2 == 1) k <- k+1 # %% is the modulo operator
++    }
++    return(k)
++ }
+> oddcount(c(1,3,5))
+[1] 3
+> oddcount(c(1,2,3,7,9))
+[1] 4
+
+# First we told R that we wanted to define a function named oddcount with one argument, x.
+# the left brace demarcates the start of the body of the function.
+# We wrote one R statement per line.
+# Until the body of the function is finished, 
+# - R reminds you that you're still in the definition by using + as its prompt, instead of the usual >.
+# + is a line-continuation character, not a prompt for a new input.
+# R resumes the > prompt after you finally enter a right brace to conclude the function body.
+
+# after defining the function, we evaluated two calls to oddcount(). 
+
