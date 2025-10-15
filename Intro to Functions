@@ -34,4 +34,21 @@
 # R resumes the > prompt after you finally enter a right brace to conclude the function body.
 
 # after defining the function, we evaluated two calls to oddcount(). 
+# Since there are three odd numbers in the vector (1,3,5), the call oddcount(c(1,3,5)) returns the value 3.
+# There are four odd numbers in (1,2,3,7,9), so the second call returns 4.
+# the modulo operator for remainder arithmetic is %% in R which is noted in the comment.
+# For example, 38 divided by 7 leaves a remainder of 3:
+
+> 38 %% 7
+[1] 3
+
+# another example:
+
+for (n in x) {
+  if (n %% 2 == 1) k <- k+1
+}
+
+# First it set n to x[1] then tests that value for being odd or even.
+# If the value is odd, in this case, the count variable k is incremented.
+# n is set to x[2] tested for being odd or even and so on.
 
