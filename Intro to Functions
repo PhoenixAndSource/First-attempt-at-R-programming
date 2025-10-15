@@ -52,3 +52,29 @@ for (n in x) {
 # If the value is odd, in this case, the count variable k is incremented.
 # n is set to x[2] tested for being odd or even and so on.
 
+# C/C++ programmers may be tempted to write loop lilke this:
+for (i in 1:length(x)) {
+  if (x[1] %% 2 ==1) k <- k+1
+}
+
+# here, length(x) is the number of elements in x.
+# if there are 25 elements, then 1:length(x) means 1:25, which means, 1,2,3,...,25.
+# this code would also work (unless x were to have length 0), but one of the major themes of R programming is to avoid loops if possible
+# if not, keep loops simple.
+
+# our original formulation:
+for (n in x) {
+  if (n %% 2 == 1) k <- k+1
+}
+# which is simple and cleaner because we do not need to use the length() function and array indexing.
+# at the end of the code, we use the return statement:
+return(k)
+# this makes the function return the computed value of k to the code that called it.
+k
+# simply k also works.
+# R functions will return the last value computed if there is no explicit return() call. However, use this with care (section 7.4.1.)
+# in programming language, x is the formal argument (or formal parameter) of the function oddcount(). 
+# In the first function call in the preceding example, c(1,3,5) is referred to as the actual argument.
+# these terms allude to the fact that x in the function definition is just a placeholder.
+# c(1,3,5) is the value actually used in the computation.
+# in the second function call, c(1,2,3,7,9) is the actual argument.
