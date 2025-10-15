@@ -78,3 +78,31 @@ k
 # these terms allude to the fact that x in the function definition is just a placeholder.
 # c(1,3,5) is the value actually used in the computation.
 # in the second function call, c(1,2,3,7,9) is the actual argument.
+
+# 1.3.1 Variable Scope
+# A variable visible only within a function body means that it is "local" to that function.
+# In oddcount(), k and n are local variables. They disappear after the function returns:
+
+> oddcount(c(1,2,3,7,9))
+[1] 4
+> n
+Error: object 'n'not found
+
+# note that formal parameters in an R function are local variables. Make the following function call:
+> z <- c(2,6,7)
+> oddcount(z)
+
+# suppose that the code of oddcount() changes x. then z would not change.
+# after the call to oddcount(), z would have the same value as before. 
+# To evaluate a function call, R copies each actual argument to the corresponding local paramater variable,
+# and changes to that variable are not visible outside the function.
+# Scoping rules (Chapter 7)
+# Variables created outside functions are global and are available within functions as well.
+# Example:
+> f <- function(x) return(x+y)
+> y <-3
+> f(5)
+[1] 8
+# here y is a global variable
+# global variable can be written to from within a function by using R's superassignment operator, <<-. (Chapter 7)
+
