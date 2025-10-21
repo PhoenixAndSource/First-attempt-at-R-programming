@@ -1,0 +1,32 @@
+# Vectors
+# Main data type in R is the vector.
+# We'll look at how vectors relate to some other data types in R
+# in R, individual numbers (scalars) do not have a separate data type (unlike C family languages)
+# individual numbers are special cases of vectors. 
+# (in C family languages, matrices are special cases of vectors)
+
+# Recycling - the automatic lengthening of vectors in certain settings
+# Filtering - the extraction of subsets of vectors
+# Vectorization - where functions are applied element-wise to vectors
+
+# All these operations are central to R programming
+
+# 2.1 Scalars, Vectors, Arrays, and Matrices.
+
+# vector variables are considered different from scalars (single-number variables).
+
+# The following is an example of C code:
+int x;
+int y[3];
+# This requests the compiler to allocate space 
+# for a single integer named x 
+# and a three-element integer array (C terminology comparable to R's vector type) named y.
+
+# but in R, numbers are actually considered one-element vectors, and has no such thing as scalar.
+# R variable types are called modes.
+# All elements of a vector must have the same mode, 
+# which can be integer, numeric (floating-point number), character (string), logical (Boolean), complex, etc.
+# If you need program code to check the variable x, query it  by the call typeof(x).
+# vector indices in R begin at 1. (unlike vector indices in ALGOL-family languages, such as C and Python)
+
+# 2.1.1 Adding and Deleting Vector Elements.
