@@ -1,0 +1,106 @@
+# 1.7.2 The example() function
+# each of the help entries comes with examples
+# the example() function will run those examples for you.
+
+> example(seq)
+
+seq> seq(0, 01, length.out=11)
+  [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+
+seq> seq(stats::rnorm(20))
+  [1] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+
+seq> seq(1, 9, by = 2) # match
+[1] 1 3 5 7 9
+
+seq> seq(1,9, by = pi) # stay below
+[1] 1.000000 4.141593 7.283185
+
+seq> seq(1, 6, by = 3)
+[1] 1 4
+
+seq> seq(1.575, 5.125, by=0.05)
+ [1] 1.575 1.625 1.675 1.725 1.775 1.825 1.875 1.925 1.975 2.025 2.075 2.125
+[13] 2.175 2.225 2.275 2.325 2.375 2.425 2.475 2.525 2.575 2.625 2.675 2.725
+[25] 2.775 2.825 2.875 2.925 2.975 3.025 3.075 3.125 3.175 3.225 3.275 3.325
+[37] 3.375 3.425 3.475 3.525 3.575 3.625 3.675 3.725 3.775 3.825 3.875 3.925
+[49] 3.975 4.025 4.075 4.125 4.175 4.225 4.275 4.325 4.375 4.425 4.475 4.525
+[61] 4.575 4.625 4.675 4.725 4.775 4.825 4.875 4.925 4.975 5.025 5.075 5.125
+
+seq> seq(17) # same as 1:17
+ [1] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+
+# the seq() function generates various kinds of numeric sequences in arithmetic progression
+# running example(seq) resulted in R's running some examples of seq().
+# useful for graphics. You can use the example() function to give you a "graphic" illustration.
+# example:
+
+> example(persp)
+
+# This displays a series of sample graphs for the persp() function.
+# Press enter in the R console when you are ready to see the next one.
+# the code for each example is shown in the console, so you can experiment by tweaking the arguments.
+
+# 1.7.3 If you don't know quite what you're looking for.
+# Use the function help.search() to do a google-style search through R's documentation.
+# For example you want to find a function to generate random variates from multivariate normal distributions.
+# To determine which function, if any, does this, you could try
+> help.search("multivariate normal")
+# this produces a response containing this excerpt:
+mvrnorm(MASS)   Simulate from a Multivariate Normal
+                Distribution
+# You can see that the function mvrnorm() will do the job, and it is in the package MASS.
+# There is also a question-mark shortcut to help.search():
+> ??"multivariate normal"
+
+# 1.7.4 Help for Other Topics
+# R's help files have pages for specific functions
+# help for function mvrnorm() which is in the package MASS
+> ?mvrnorm
+
+# you can learn about the entire package like this:
+> help(package=MASS)
+
+# help is available for general topics.
+# to learn about files:
+> ?files
+# this gives you information about a number of file-manipulation functions, such as file.create().
+# some other topics:
+Arithmetic
+Comparison
+Control
+Dates
+Extract
+Math
+Memory
+NA
+NULL
+NumericaConstants
+Paren
+Quotes
+Startup
+Syntax
+
+# 1.7.5 Help for Batch Mode
+# R has batch commands that allow you to run a command directly from your operating system's shell.
+# get help on a particular batch command, you can type:
+R CMD command --help
+For example, to learn all the options associated with the INSTALL command you can type
+R CMD INSTALL --help
+
+# 1.7.6 Help on the Internet 
+# R project's manuals http://www.r-project.org/. click manuals.
+# Various R search engines listed on R home page. Click Search.
+# The sos package offers highly sophisticated searching of R materials
+# RSeek search engine: http://www.rseek.org/
+# post your R questions to r-help, the R list server: http://www.r-project.org/mail.html
+# Gmane (http://www.gmane.org/)
+# R is difficult to search for using general purpose search engines such as Google
+# use Google's filetype criterion. to search for R scripts files having a .R suffix 
+# search files having .R suffix related to permutations, enter:
+filetype:R permutations -rebol
+# the -rebol asks Google to exclude pages with the word "rebol" 
+# because the REBOL programming language uses the same suffix (.R)
+# The comprehensive R Archive Network (CRAN) at http://cran.r-project.org/ 
+# is a repository of user-contributed R code so it is a good Google search term.
+# for example, search "lm CRAN" helps you find material on R's lm() function.
