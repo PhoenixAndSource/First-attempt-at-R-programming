@@ -1,0 +1,184 @@
+# ॐ मणि पद्मे हूँ
+# from file ExamsQuiz.txt
+
+2    3.3  4
+3.3  2    3.7
+4    4.3  4
+2.3  0    3.3
+
+# letter grades on a four-point scale; 3.3 is a B+ for example.
+# each line contains the data for one student
+# midterm grade, final grade, average quiz grade.
+# we can think if midterm and quiz grades could predict final exam grade...
+
+# read data file:
+> examsquiz <- read.table("ExamsQuiz.txt",header=FALSE)
+
+# header line naming the variables in each student record 
+# we specified header=FALSE in the function call (example of default argument)
+# Actually the default value of the header argument is FALSE already.
+# You can check this in R's online help for read.table()
+# so we didn't need to specify this setting, but it's clearer if we do.
+# Our data is now in examsquiz, which is an R object of class data.frame.
+
+> class(examsquiz)
+[1] "data.frame"
+
+# to check that file was read correctly, let's look at the first few rows:
+> head(examsquiz) 
+v1 v2 v3
+1 2.0 3.3 4.0
+2 3.3 2.0 3.7
+3 4.0 4.3 4.0
+4 2.3 0.0 3.3
+5 2.3 1.0 3.3
+6 3.3 3.7 4.0
+
+# Lacking a header for the data, R named the columns v1, v2 and v3.
+# Row numbers appear on the left.
+# it would be better to have a header in our data file, with meaningful names like Exam1.
+# let's try to predict the exam 2 score (give in the second column of examquiz) from exam 1 (first column):
+
+lma <- 1m(examsquiz[,2] ~ examsquiz[,1])
+
+# the lm() (for "linear model") function call here tells R to fit this prediction equation:
+# predicted Exam 2 = β₀ + β₁ Exam 1
+# Here β₀ and β₁ are constants to be estimated from our data.
+# in other words, we are fitting a straight line to the (exam 1, exam 2) pairs in our data.
+# this is done through a classic least-square method.
+# exam 1 scores: which are stored in the first column of our data frame, are collectively referred to as examsquiz[,1]
+# omission of the first subscript (the row number) means that we are referring to an entire column of the frame.
+# the exam 2 scores are similarly referenced.
+# so, our call to lm() above predicts the second column of examsquiz from the first.
+# we also could have written
+lma <- lm(examsquiz$V2 ~ examsquiz$V1)
+
+# recalling that a data frame is just a list whose elements are vectors. 
+# here the columns are the V1, V2, and V3 components of the list.
+# the results returned by lm() are in an object we stored in the variable lma
+# lma is an instance of the class lm.
+# we can list its components by calling attributes():
+
+> attributes(lma)
+$names
+[1] "coefficients"  "residuals"  "effects"  "rank"
+[5] "fitted.values" "assign"     "qr"       "df.residual"
+[9] "xlevels"       "call"       "terms"    "model"
+
+$class
+[1] "lm"
+
+# a more detailed accounting can be obtained via the call str(lma)
+# the estimated values of β₁ are stored in lma$coefficients.
+# you can display them by typing the name at the prompt
+# you can also abbreviate component names as long as they are clear and not ambiguous.
+# when the lists consists of components xyz, xywa and xbcde, 
+# second and third components can be abbreviated to xyw and xb
+
+> lma$coef
+  (Intercept) examsquiz[, 1]
+  1.1205209  0.5899803
+
+# lma$coefficients is a vector, printing it is simple. 
+# what happens when you print the object lma itself?
+>lma
+
+Call:
+lm(formula = examsquiz[, 2] ~ examsquiz[, 1])
+
+Coefficients:
+  (Intercept) examsquiz[, 1]
+    1.121              0.590
+
+# Why did R print only these items and not the other components of lma?
+# The answer is that here is R is using the print() function which is a generic function.
+# As a generic function, print() hands off the work to another function whose job 
+# is to print objects of class lm –– the print.lm() function –– and this is what that function displays.
+# We can get a more detailed printout of the contents of lma by calling summary()
+# It triggers a call to summary.lm() behind the scenes, and we get a regression-specific summary:
+
+> summary(lma)
+
+Call:
+lm(formula = examsquiz[, 2] ~ examsquiz[, 1])
+
+Residuals:
+    Min    1Q         Median  3Q      Max
+-3.4804    -0.1239    0.3426  0.7261  1.2225
+
+Coefficients:
+                Estimate Std.     Error t  value    Pr(>|t|)
+(Intercept)     1.1205            0.6375   1.758    0.08709  .
+examsquiz[, 1]  0.5900            0.2030   2.907    0.00614 **
+
+# a number of other generic functions are defined for this class. 
+# see online help lm() for details.
+# R's online documentation is disccussed in Section 1.7.
+
+# To estimate a prediction equation for exam 2 from both the exam 1 and the quiz scores, 
+# we would use the + notation:
+
+> lmb <- lm(examsquiz[,2] ~ examsquiz[,1] + examsquiz[,3])
+
+# 1.6 Startup and Shutdown
+
+# R's behavior can be customized using startup files
+# In addition R can save all or part of a session such as a record of what you did to an output file.
+# If there are R commandsa that you would like to execute at the beginning of every R session
+# You can place them in a file called >Rprofile 
+# located either in your home directory or in the directory from which you are running R.
+# the latter directrory is searched for this file first
+# which allows you to have custom profiles for particular projects.
+# for example, to set the text editor that R invokes if you call edit(), 
+# you can use a line in .Rprofile like this (if you're on a Linux system):
+
+options(editor="/usr/bin/vim")
+
+# R's options() function is used for configuration, that is, to tweak various settings. 
+# specify the full path to your own editor,
+# using the notation (slashes or backslashes) appropriate to your operating system.
+# another example (in .Rprofile on Linux)
+.libPaths("/home/nm/R")
+# this automatically adds a directory that contains all my auxiliary packages to my R search path.
+# R has the notion of my "current working directory".
+# upon startup, this will be the directory ferom which you launched R, if you're using Linux or Mac.
+# in Windows, it will probably be your "Documents" folder.
+# If you then reference files during your R session: they will be assumed to be in that directory.
+# You can always check your current directory by typing the following:
+> getwd()
+# You can change your working directory by calling setwd() with the desired directory as a quoted argument.
+# For example:
+> setwd("q")
+# would set the working directory to "q".
+
+# as you proceed through an interactive R session, R records the commands that you submit. 
+# If you answer yes to the question "Save workspace image?"
+# When you quit, R will save all the objects you created in that session and restore them in your next session.
+# So you don't have to redo the work from scratch to continue where you left off.
+
+# The saved workspace is in a file named .Rdata, 
+# which is located either in the directory from which you invoked the R session (Linux) 
+# or in the R installation directory (Windows).
+# You can consult the .Rhistory file, which records your commands, to remind yourself how that workspace was created.
+# If you want speedier startup/ shutdown,
+# you can skip loading all those files and saving of your session at the end by running R with the vanilla option:
+
+R -- vanilla
+
+# Other options fall between vanilla and "load everything." 
+# You can find more information about startup files by quering R's online help faility, as follows:
+> ?Startup
+
+# 1.7 Getting Help
+# R self-documenting.
+# 1.7.1 The help() function
+# To get online help, invoke help().
+# For example, to get information on the seq() function, type this:
+> help(seq)
+# shortcut to help() is question mark (?):
+> ?seq
+# special characters and some reserved workds must be quoted when used with the help() function.
+# for example you need to type the following to get help on the < operator:
+> ?"<"
+And to see what the online manual has to say about for loops, enter this:
+> ?"for"
