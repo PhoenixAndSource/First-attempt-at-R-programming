@@ -207,3 +207,81 @@ longer object length
 #  (  1 4        (  1 2
 #     2 5    +      2 1
 #     3 6 )         1 2 )
+
+# 2.4 Common Vector Operations
+# common operations related to vectors
+# arithmetic and logical operations, vector indexing, some useful ways to create vectors.
+
+# 2.4.1 Vector Arithmetic and Logical Operations
+# Remember that R is a functional language. 
+# Every operator, including + in the following example is actually a function.
+> 2+3
+[1] 5
+> "+"(2,3)
+[1] 5
+
+# Recall further that scalars are actually one-element vectors.
+# add vectors, and the + operation will be applied element-wise.
+
+> x <- c(1,2,4)
+> x + c(5,0,-1)
+[1] 6 2 3
+
+# if you are familiar with linear algebra, 
+# you may be surprised at what happens when we multiply two vectors:
+> x * c(1,2,4)
+[1] 5 0 -4
+
+# But remember, because of the way the * function is applied, the multiplication is done element by element.
+# The first element of the product (5) 
+# is the result of the first element of x (1) 
+# being multiplied by the first element of c(5,0,1)(5)
+
+# the same principle applies to other numeric operators.
+# Here's an example: 
+> x <- c(1,2,4)
+> x / c(5,4,-1)
+[1]  0.2 0.5 -4.0
+> x %% c(5,4,-1)    # %% means modulus which is the remainder when you divide.
+[1] 1 2 0
+
+# 2.4.2  Vector Indexing
+# indexing vectors - we form a subvector  by picking elements of the given vector for specific indices.
+# the format is vector1[vector2]
+> y <- c(1.2,3.9,0.4,0.12)
+> y[c(1,3)] # extract elements 1 and 3 of y
+[1] 1.2  0.4
+> y[2:3]
+[1] 3.9 0.4
+> v <- 3:4
+> y[v]
+[1] 0.40 0.12
+
+# note that duplicates are allowed.
+
+> x <- c(4,2,17,5)
+> y <- x[c(1,1,3)]
+> y
+[1]  4  4  17
+
+# negative subscripts mean that we want to exclude the given elements in our output.
+
+> z <- c(5,12,13) 
+> z[-1] # exclude element 1
+[1] 12 13
+> z[-1: -2]  # exclude elements 1 through 2
+[1] 13
+
+# In such contexts, it is often useful to use the length() function. 
+# For instance, if we want to get all the elements of vector z except for the last:
+> z <- c(5,12,13)
+> z[1:(length(z)-1)]
+[1]  5 12
+
+# Or:
+> z[-length(z)]
+[1]  5  12
+# this is more general than using z[1:2].
+# Our program may need to work for more than just vectors of length 2
+# and the second approach would give us that generality.
+
