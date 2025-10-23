@@ -285,3 +285,91 @@ longer object length
 # Our program may need to work for more than just vectors of length 2
 # and the second approach would give us that generality.
 
+# 2.4.3 Generating Useful Vectors with the : Operator
+# Useful for creating vectors:
+# Colon Operator: (chapter 1) It produces a vector consisting of a range of numbers.
+
+> 5:8
+[] 5 6 7 8
+> 5:1
+[1] 5 4 3 2 1
+
+# Loop context:
+for (i in 1:length(x)) {
+> i <- 2
+> 1:i-1 # this means (1:i) -1, not 1:(i-1)
+[1] 0 1
+> 1:(i-1)
+[1] 1
+
+# In the expression 1:i-1, the colon operator takes precedence over the subtraction.
+# So, the expression 1:i is evaluated first, returning 1:2.
+# R then subtracts 1 from that expression. 
+# That means subtracting a one-element vector from a two-element one
+# which is done via recycling.
+# The one-element vector (1) will be extended to (1,1) to be of compatible length with 1:2
+# Element-wise subtraction then yields to the vector (0,1).
+# in the expression 1:(i-1), on the other hand, 
+# the parentheses have higher precedence than the colon,
+# Thus, 1 is subtracted from i, resulting in 1:1, as seen in the preceding example.
+# You can obtain complete details of operator precedence in R through the included help: 
+# just type ?Syntax at the command prompt
+
+# 2.4.4 Generating Vector Sequences with seq()
+# A generalization of : is the seq() (or sequence) function, 
+# which generates a sequence in arithmetic progression.
+# For instance, whereas 3.8 yields the vector (3,4,5,6,7,8)
+# with the elements spaced one unit apart (4 - 3 = 1, 5 - 4 = 1, and so on)
+# we can make them, say, three units apart:
+> seq(from=12,to=30,by=3)
+[1] 12 15 18 21 24 27 30
+
+# The spacing can be a noninteger value, too say 0.1.
+> seq(from=1.1,to=2,length=10)
+[1] 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0
+
+# One handy use for seq() is to deal with the empty-vector problem we mentioned earlier in Section 2.1.2
+# There, we were dealing with a loop that began with this:
+
+for (i in 1:length(x))
+
+# If x is empty, this loop should not have any iterations, 
+# but it actually has two
+# since 1:length(x) evaluates to (1,0).
+# we could fix this by writing the statement of follows:
+
+for (i in seq(x))
+
+> x <- c(5,12,13)
+> x
+[1]  5 12 13
+> seq(x)
+[1] 1 2 3
+> x <- NULL
+> x
+NULL
+> seq(x)
+integer(0)
+
+# You can see that seq(x) gives us the same result as 1:length(x) if x is not empty,
+# but it correctly evaluates to NULL if x is empty, resulting in zero iterations in the above loop.
+
+# 2.4.5  Repeating Vector Constants with rep()
+# The rep() (or repeat) function allows us to conveniently put the same constant into long vectors.
+# The call form is rep(x,times), which creates a vector of times*length(x) elements — that is, times copies of x.
+# Here is an example:
+
+> x <- rep(8,4)
+> x
+[1] 8 8 8 8 
+> rep(c(5,12,13)3)
+[1]  5 12 13 5 12 13 5 12 13
+> rep(1:3,2)
+[1] 1 2 3 1 2 3
+
+# There is also a named argument each, with very different behavior, which interleaves the copies of x
+
+> rep(c(5,12,13),each=2)
+[1] 5 5 12 12 13 13
+
+
