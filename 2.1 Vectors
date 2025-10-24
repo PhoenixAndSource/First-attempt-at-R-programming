@@ -461,3 +461,42 @@ findruns1 <- function(x,k) {
 # This is better, as we've reduced the number of memory allocations to just two, 
 # down from possibly many in the first version of the code.
 # If we really need speed, we could possibly recode this in C (chapter 14)
+
+# 2.5.2 Extended Example: Predicting Discrete-Valued Time Series
+# if we observe 0- and 1 valued data, one per time period.
+# To make things concrete, say it's daily weather data: 1 for rain and 0 for no rain.
+# We wish to predict whether it will rain tomorrow, knowing whether it rained or not in recent days.
+# specifically, for some number k, we will predict tomorrow's weather based on he weather record of the last k days.
+# We'll use majority rule: 
+# If the number of 1s in the previous k time periods is at least k/2, 
+# we'll predict the next value to be 1; otherwise, our prediction is 0.
+# for example, if k = 32 and data for the last three periods is 1,0,1, we'll predict the next period to be a 1.
+
+# But how should we choose k? 
+# If we choose too small value, it may give us too small a sample from which to predict.
+# Too large a value, the data from the distant past may have little or no predictive value.
+
+# a common solution to this problem is to take known data, called a training set,
+# then ask how well various values of k would have performed on that data.
+
+# In the weather case, suppose we have 500 days of data and suppose we are considering using k = 3.
+# To assess the predictive ability of that value for k, we "predict" each day in our data from the previous three days
+# and then compare the predictions with the known values.
+
+# after doing this throughout our data, we have an error rate for k = 3. 
+# We do the same for k = 1, k = 2. k = 4, and so on,
+# up to some maximum value of k that we feel is enough.
+# We then use whichever value of k worked best in our training data for future predictions.
+
+# So how would we code that in R? Here's a naive approach:
+
+preda <- function(x,k) {
+  n <- length(x)
+  k2 <- k/2
+  # the vector pred will contain our predicted values
+  pred <- vector(length=n-k)
+  for (i in 1:(n-k)) {
+    if (sum(x[i:(i+(k-1))]) >= k2) pred[i] <- 1 else pred[i] <- 0
+  }
+  return(mean(abs(pred-x[(k+1):n])))
+}
