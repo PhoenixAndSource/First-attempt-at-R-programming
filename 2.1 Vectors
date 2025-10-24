@@ -395,3 +395,69 @@ integer(0)
 # The all() function works similarly and reports if all of the values are TRUE
 
 # 2.5.1 Extended Example: Finding Runs of Consecutive Ones
+# What if we want to find runs of consecutive 1s in vectors consisting of just 1s and 0s?
+# In the vector (1,0,0,1,1,1,0,1,1), 
+# There is a run of length 3 starting at index 4, 
+# and runs of length 2 beginning at indices 4,5, and 8.
+# So the call findruns((c(1,0,0,1,1,1,0,1,1),2) to our function to be shown below returns (4,5,8).
+# Here is the code:
+
+findruns <- function(x,k) {
+  n <- length(x)
+  runs <- NULL
+  for (i in 1:(n-k+1)) {
+    if (all(x[i:(i+k-1)]==1)) runs <- c(runs,i)
+  }
+  return(runs)
+}
+
+# In line 5, we need to determine whether all of the k values starting at x[i]––that is,
+# if all of the values in x[1],x[i+1],...,x[i+k-1]––are 1s.
+# The expression x[i:(i+k-1)] gives us this range in x,
+# then applying all() tells us whether there is a run there.
+
+# Let's test it:
+
+> y <- c(1,0,0,1,1,1,0,1,1)
+> findruns(y,3)
+[1] 4
+> findruns(y,2)
+[1] 4 5 8
+> findruns(y,6)
+NULL
+
+# Although the use of all() is good in the preceding code, the buildup of the vector runs is not so good.
+# vector allocation is time consuming.
+# Each execution of the following slows down our code,
+# because it allocates a new vector in the call c(runs,i).
+# (The fact that a new vector is assigned to runs is irrelevant; we still have done a vector memory space allocation.)
+
+runs <- c(runs,i)
+
+# In a short loop, this probably will be no problem,
+# But when application performance is an issue, there are better ways.
+# One alternative is to preallocate the memory space, like this:
+
+findruns1 <- function(x,k) {
+  n <- length(x)
+  runs <- vector(length=n)
+  count <- 0
+  for (i in 1:(n-k+1)){
+    if (all(x[i:(i+k-1)]==1)) {
+      count <- count + 1
+      runs[count] <- 1
+    }
+  }
+  if (count > 0) {
+    runs <- runs[1:count]
+  } else runs <- NULL
+  return(runs)
+}
+
+# In line 3, we set up space of a vector of length n.
+# This means we avoid new allocations during execution of the loop.
+# We merely fill runs, in line 9
+# Just before exiting the function, we redefine runs in line 12 to remove the unused portion of the vector.
+# This is better, as we've reduced the number of memory allocations to just two, 
+# down from possibly many in the first version of the code.
+# If we really need speed, we could possibly recode this in C (chapter 14)
