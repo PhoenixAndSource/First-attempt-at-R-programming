@@ -372,4 +372,26 @@ integer(0)
 > rep(c(5,12,13),each=2)
 [1] 5 5 12 12 13 13
 
+# 2.5 Using all() and any()
+# the any() and all() functions are handy shortcuts. They report whether any or all of their arguments are TRUE.
+> x <- 1:10
+> any(x > 8)
+[1] TRUE
+> any(x > 88)
+[1] FALSE
+> all(x > 88)
+[1] FALSE
+> all(x > 0)
+[1] TRUE
 
+# For example, suppose that R executes the following:
+> any(x > 8)
+
+# It first evaluates x > 8, yielding this:
+
+(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE)
+
+# The any() function then reports whether any of those values is TRUE. 
+# The all() function works similarly and reports if all of the values are TRUE
+
+# 2.5.1 Extended Example: Finding Runs of Consecutive Ones
