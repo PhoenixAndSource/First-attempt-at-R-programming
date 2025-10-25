@@ -1,0 +1,555 @@
+# Vectors
+# Main data type in R is the vector.
+# We'll look at how vectors relate to some other data types in R
+# in R, individual numbers (scalars) do not have a separate data type (unlike C family languages)
+# individual numbers are special cases of vectors. 
+# (in C family languages, matrices are special cases of vectors)
+
+# Recycling - the automatic lengthening of vectors in certain settings
+# Filtering - the extraction of subsets of vectors
+# Vectorization - where functions are applied element-wise to vectors
+
+# All these operations are central to R programming
+
+# 2.1 Scalars, Vectors, Arrays, and Matrices.
+
+# vector variables are considered different from scalars (single-number variables).
+
+# The following is an example of C code:
+int x;
+int y[3];
+# This requests the compiler to allocate space 
+# for a single integer named x 
+# and a three-element integer array (C terminology comparable to R's vector type) named y.
+
+# but in R, numbers are actually considered one-element vectors, and has no such thing as scalar.
+# R variable types are called modes.
+# All elements of a vector must have the same mode, 
+# which can be integer, numeric (floating-point number), character (string), logical (Boolean), complex, etc.
+# If you need program code to check the variable x, query it  by the call typeof(x).
+# vector indices in R begin at 1. (unlike vector indices in ALGOL-family languages, such as C and Python)
+
+# 2.1.1 Adding and Deleting Vector Elements.
+# Vectors are stored like arrays in C, contiguously (connecting to/ next to) 
+# That's why you cannot insert or delete elements (which you can do in Python)
+# The size of a vector is determined at its creation
+# So if you want to add or delete elements, 
+# you'll have to reassign the vector
+# example: add an element to the middle of a four-element vector:
+> x <- c(88,5,12,13)
+> x <- c(x[1:3],168,x[4]) # insert 168 before the 13
+> x 
+[1] 88 5 12 168 13
+
+# Here we created a four-element vector and assigned it to x. 
+# To insert a new number 168 between the third and fourth elements,
+# we strung together the first three elements of x,
+# then the 168, 
+# then the fourth element of x.
+# This creates a new five-element vector, leaving x intact for the time being
+# We then assigned that new vector to x.
+
+# in the result, it appears as if we had actually changed the vector stored in x,
+# but really we created a new vector and stored that vector in x.
+# this difference may seem subtle but it has implications.
+# for instance, in some cases, it may restrict the potential for fast performance in R (chapter 14)
+
+# 2.1.2 Obtaining the length of a Vector
+# You can obtain the length of a vector by using the length() function:
+> x <- c(1,2,4)
+> length(x)
+[1] 3
+
+# In this example, we already know the length of x, so there really is no need to query it.
+# But in writing general function code, you'll often need to know the lengths of vector arguments.
+# make a function that determines 
+# the index of the first 1 value 
+# in the function's vector argument
+# (assuming we are sure there is such a value)
+# here is one way to write the code:
+
+first1 <- function(x) {
+  for (i in 1:length(x)) {
+    if (x[1] == 1) break # break out of loop
+  }
+  return(i)
+}
+
+# Without the length() function, 
+# we would have needed to add a second argument to first1(), 
+# like naming it n, to specify the length of x.
+# note in this case, writing the loop as follows won't work:
+for (n in x)
+# The problem with this approach it doesnt allow us to retrieve the index of the desired element
+# thus we need an explicit loop, which in turn requires the calculating the length of x
+
+# in coding be careful that length(x) might be 0
+# in such a case, look what happens to the expression 1:length(x) i our for loop:
+> x <- c()
+> x
+NULL
+> length(x)
+[1] 0
+> 1:length(x)
+[1] 1 0
+
+# Our variable i in this loop takes on the value 1, then 0, which is certainly not what we want if the vector x is empty.
+# A safe alternative is to use the more advanced R function seq(), as we'll discuss in section 2.4.4
+
+# 2.1.3. Matrices and Arrays as Vectors
+# arrays and matrices (and even lists, in a sense) are actually vectors too.
+# they merely have extra class attributes
+# For example, matrices have the number of rows and columns
+# arrays and matrices are vectors,
+# everything we say about vectors applies to them too.
+# Example:
+
+> m
+  [,1] [,2]
+[1,]  1  2
+[2,]  3  4
+> m + 10:13
+  [,1] [,2]
+[1,]  11  14
+[2,]  14  17
+
+# the 2-by-2 matrix m is stored as a four-element vector, column-wise, as (1,3,2,4)
+# we then added (10,11,12,13) to it, yielding (11,14,14,17), 
+# but R remembered that we were working with matrices and thus gave us the 2-by-2 result you see in the example.
+
+# 2.2 Declarations
+# Typically, compiled languages require that you declare variables; that is warn the interpreter/ compiler of the variables' existence before using them.
+# this is the case in our earlier C example.
+
+int x;
+int y[3];
+
+# As with most scripting languages (such as Python and Perl), 
+# you do not declare variables in R)
+# example
+z <- 3
+# this code, with no previous reference to z, is perfectly legal (and common-place).
+# however, if you reference specific elements of a vector, you must warn R. 
+# For instance, say we wish y to be a two-component vector with values 5 and 12
+
+# The following will not work:
+> y[1] <- 5
+> y[2] <- 12
+
+# Instead, you must create y first, for instance this way:
+> y <- vector(length=2)
+> y[1] <- 5
+> y[2] <-12
+
+# Instead you must create y first:
+> y <- vector(length=2)
+> y[1] <- 5
+> y[2] <-12
+
+# The following will also work
+> y <- c(5,12)
+# This approach is all right because on the right-hand sided we are creating a new vector, to which we then bind y.
+# The reason we cannot suddenly spring an expression like y[2] on R stems from R's functional language nature.
+# The reading and writing of individual vector elements are actually handled by functions.
+# If R doesn't already know that y is a vector, these functions have nothing on which to act.
+# Just as variables are not declared, they are not constrained in terms of mode. 
+
+# The following sequence of events is perfectly valid:
+
+> x <- c(1,5)
+> x
+[1] 1 5
+> x <- "abc"
+
+# First, x is associated with a numeric vector, then with a string. 
+# (Again, for C/C++ programmers: x is nothing more than a pointer, which can point to different types of objects at different times.)
+
+2.3 Recycling
+
+# When applying an operation to two vectors that requires them to be the same length,
+# R automatically recycles, or repeats, the shorter one,
+# until it is long enough to match the longer one.
+# Here is an example:
+
+> c(1,2,4) + c(6,0,9,20,22)
+[1] 7 2 13 21 24
+Warning message:
+longer object length
+  is not a multiple of shorter object length in: c(1,2,4) + c(6,0,9,20,22)
+
+# The shorter vector was recycled, so the operation was taken to be as follows:
+> c(1,2,4,1,2) + c(6,0,9,20,22)
+
+# Here's a more subtle example:
+> x
+  [,1] [,2]
+[1,]  1  4
+[2,]  2  5
+[3,]  3  6
+> x+c(1,2)
+  [,1]  [,2]
+[1,]  2  6
+[2,]  4  6
+[3,]  4  8
+
+# keep in mind that matrices are actually long vectors. 
+# Here, x, as a 3-by-2 matrix, is also a six-element vector,
+# Which in R is stored column by column
+# x is the same as c(1,2,3,4,5,6).
+# We added a two-element vector to this six-element one
+# so our added vector needed to be repeated twice to make six elements.
+# x + c(1,2,1,2,1,2)
+# also, c(1,2,1,2,1,2) was also changed from a vector to a matrix having the same shape as x before the addition took place:
+1 2
+2 1
+1 2
+# thus, the net result was to compute the following:
+#  (  1 4        (  1 2
+#     2 5    +      2 1
+#     3 6 )         1 2 )
+
+# 2.4 Common Vector Operations
+# common operations related to vectors
+# arithmetic and logical operations, vector indexing, some useful ways to create vectors.
+
+# 2.4.1 Vector Arithmetic and Logical Operations
+# Remember that R is a functional language. 
+# Every operator, including + in the following example is actually a function.
+> 2+3
+[1] 5
+> "+"(2,3)
+[1] 5
+
+# Recall further that scalars are actually one-element vectors.
+# add vectors, and the + operation will be applied element-wise.
+
+> x <- c(1,2,4)
+> x + c(5,0,-1)
+[1] 6 2 3
+
+# if you are familiar with linear algebra, 
+# you may be surprised at what happens when we multiply two vectors:
+> x * c(1,2,4)
+[1] 5 0 -4
+
+# But remember, because of the way the * function is applied, the multiplication is done element by element.
+# The first element of the product (5) 
+# is the result of the first element of x (1) 
+# being multiplied by the first element of c(5,0,1)(5)
+
+# the same principle applies to other numeric operators.
+# Here's an example: 
+> x <- c(1,2,4)
+> x / c(5,4,-1)
+[1]  0.2 0.5 -4.0
+> x %% c(5,4,-1)    # %% means modulus which is the remainder when you divide.
+[1] 1 2 0
+
+# 2.4.2  Vector Indexing
+# indexing vectors - we form a subvector  by picking elements of the given vector for specific indices.
+# the format is vector1[vector2]
+> y <- c(1.2,3.9,0.4,0.12)
+> y[c(1,3)] # extract elements 1 and 3 of y
+[1] 1.2  0.4
+> y[2:3]
+[1] 3.9 0.4
+> v <- 3:4
+> y[v]
+[1] 0.40 0.12
+
+# note that duplicates are allowed.
+
+> x <- c(4,2,17,5)
+> y <- x[c(1,1,3)]
+> y
+[1]  4  4  17
+
+# negative subscripts mean that we want to exclude the given elements in our output.
+
+> z <- c(5,12,13) 
+> z[-1] # exclude element 1
+[1] 12 13
+> z[-1: -2]  # exclude elements 1 through 2
+[1] 13
+
+# In such contexts, it is often useful to use the length() function. 
+# For instance, if we want to get all the elements of vector z except for the last:
+> z <- c(5,12,13)
+> z[1:(length(z)-1)]
+[1]  5 12
+
+# Or:
+> z[-length(z)]
+[1]  5  12
+# this is more general than using z[1:2].
+# Our program may need to work for more than just vectors of length 2
+# and the second approach would give us that generality.
+
+# 2.4.3 Generating Useful Vectors with the : Operator
+# Useful for creating vectors:
+# Colon Operator: (chapter 1) It produces a vector consisting of a range of numbers.
+
+> 5:8
+[] 5 6 7 8
+> 5:1
+[1] 5 4 3 2 1
+
+# Loop context:
+for (i in 1:length(x)) {
+> i <- 2
+> 1:i-1 # this means (1:i) -1, not 1:(i-1)
+[1] 0 1
+> 1:(i-1)
+[1] 1
+
+# In the expression 1:i-1, the colon operator takes precedence over the subtraction.
+# So, the expression 1:i is evaluated first, returning 1:2.
+# R then subtracts 1 from that expression. 
+# That means subtracting a one-element vector from a two-element one
+# which is done via recycling.
+# The one-element vector (1) will be extended to (1,1) to be of compatible length with 1:2
+# Element-wise subtraction then yields to the vector (0,1).
+# in the expression 1:(i-1), on the other hand, 
+# the parentheses have higher precedence than the colon,
+# Thus, 1 is subtracted from i, resulting in 1:1, as seen in the preceding example.
+# You can obtain complete details of operator precedence in R through the included help: 
+# just type ?Syntax at the command prompt
+
+# 2.4.4 Generating Vector Sequences with seq()
+# A generalization of : is the seq() (or sequence) function, 
+# which generates a sequence in arithmetic progression.
+# For instance, whereas 3.8 yields the vector (3,4,5,6,7,8)
+# with the elements spaced one unit apart (4 - 3 = 1, 5 - 4 = 1, and so on)
+# we can make them, say, three units apart:
+> seq(from=12,to=30,by=3)
+[1] 12 15 18 21 24 27 30
+
+# The spacing can be a noninteger value, too say 0.1.
+> seq(from=1.1,to=2,length=10)
+[1] 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0
+
+# One handy use for seq() is to deal with the empty-vector problem we mentioned earlier in Section 2.1.2
+# There, we were dealing with a loop that began with this:
+
+for (i in 1:length(x))
+
+# If x is empty, this loop should not have any iterations, 
+# but it actually has two
+# since 1:length(x) evaluates to (1,0).
+# we could fix this by writing the statement of follows:
+
+for (i in seq(x))
+
+> x <- c(5,12,13)
+> x
+[1]  5 12 13
+> seq(x)
+[1] 1 2 3
+> x <- NULL
+> x
+NULL
+> seq(x)
+integer(0)
+
+# You can see that seq(x) gives us the same result as 1:length(x) if x is not empty,
+# but it correctly evaluates to NULL if x is empty, resulting in zero iterations in the above loop.
+
+# 2.4.5  Repeating Vector Constants with rep()
+# The rep() (or repeat) function allows us to conveniently put the same constant into long vectors.
+# The call form is rep(x,times), which creates a vector of times*length(x) elements — that is, times copies of x.
+# Here is an example:
+
+> x <- rep(8,4)
+> x
+[1] 8 8 8 8 
+> rep(c(5,12,13)3)
+[1]  5 12 13 5 12 13 5 12 13
+> rep(1:3,2)
+[1] 1 2 3 1 2 3
+
+# There is also a named argument each, with very different behavior, which interleaves the copies of x
+
+> rep(c(5,12,13),each=2)
+[1] 5 5 12 12 13 13
+
+# 2.5 Using all() and any()
+# the any() and all() functions are handy shortcuts. They report whether any or all of their arguments are TRUE.
+> x <- 1:10
+> any(x > 8)
+[1] TRUE
+> any(x > 88)
+[1] FALSE
+> all(x > 88)
+[1] FALSE
+> all(x > 0)
+[1] TRUE
+
+# For example, suppose that R executes the following:
+> any(x > 8)
+
+# It first evaluates x > 8, yielding this:
+
+(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE)
+
+# The any() function then reports whether any of those values is TRUE. 
+# The all() function works similarly and reports if all of the values are TRUE
+
+# 2.5.1 Extended Example: Finding Runs of Consecutive Ones
+# What if we want to find runs of consecutive 1s in vectors consisting of just 1s and 0s?
+# In the vector (1,0,0,1,1,1,0,1,1), 
+# There is a run of length 3 starting at index 4, 
+# and runs of length 2 beginning at indices 4,5, and 8.
+# So the call findruns((c(1,0,0,1,1,1,0,1,1),2) to our function to be shown below returns (4,5,8).
+# Here is the code:
+
+findruns <- function(x,k) {
+  n <- length(x)
+  runs <- NULL
+  for (i in 1:(n-k+1)) {
+    if (all(x[i:(i+k-1)]==1)) runs <- c(runs,i)
+  }
+  return(runs)
+}
+
+# In line 5, we need to determine whether all of the k values starting at x[i]––that is,
+# if all of the values in x[1],x[i+1],...,x[i+k-1]––are 1s.
+# The expression x[i:(i+k-1)] gives us this range in x,
+# then applying all() tells us whether there is a run there.
+
+# Let's test it:
+
+> y <- c(1,0,0,1,1,1,0,1,1)
+> findruns(y,3)
+[1] 4
+> findruns(y,2)
+[1] 4 5 8
+> findruns(y,6)
+NULL
+
+# Although the use of all() is good in the preceding code, the buildup of the vector runs is not so good.
+# vector allocation is time consuming.
+# Each execution of the following slows down our code,
+# because it allocates a new vector in the call c(runs,i).
+# (The fact that a new vector is assigned to runs is irrelevant; we still have done a vector memory space allocation.)
+
+runs <- c(runs,i)
+
+# In a short loop, this probably will be no problem,
+# But when application performance is an issue, there are better ways.
+# One alternative is to preallocate the memory space, like this:
+
+findruns1 <- function(x,k) {
+  n <- length(x)
+  runs <- vector(length=n)
+  count <- 0
+  for (i in 1:(n-k+1)){
+    if (all(x[i:(i+k-1)]==1)) {
+      count <- count + 1
+      runs[count] <- 1
+    }
+  }
+  if (count > 0) {
+    runs <- runs[1:count]
+  } else runs <- NULL
+  return(runs)
+}
+
+# In line 3, we set up space of a vector of length n.
+# This means we avoid new allocations during execution of the loop.
+# We merely fill runs, in line 9
+# Just before exiting the function, we redefine runs in line 12 to remove the unused portion of the vector.
+# This is better, as we've reduced the number of memory allocations to just two, 
+# down from possibly many in the first version of the code.
+# If we really need speed, we could possibly recode this in C (chapter 14)
+
+# 2.5.2 Extended Example: Predicting Discrete-Valued Time Series
+# if we observe 0- and 1 valued data, one per time period.
+# To make things concrete, say it's daily weather data: 1 for rain and 0 for no rain.
+# We wish to predict whether it will rain tomorrow, knowing whether it rained or not in recent days.
+# specifically, for some number k, we will predict tomorrow's weather based on he weather record of the last k days.
+# We'll use majority rule: 
+# If the number of 1s in the previous k time periods is at least k/2, 
+# we'll predict the next value to be 1; otherwise, our prediction is 0.
+# for example, if k = 32 and data for the last three periods is 1,0,1, we'll predict the next period to be a 1.
+
+# But how should we choose k? 
+# If we choose too small value, it may give us too small a sample from which to predict.
+# Too large a value, the data from the distant past may have little or no predictive value.
+
+# a common solution to this problem is to take known data, called a training set,
+# then ask how well various values of k would have performed on that data.
+
+# In the weather case, suppose we have 500 days of data and suppose we are considering using k = 3.
+# To assess the predictive ability of that value for k, we "predict" each day in our data from the previous three days
+# and then compare the predictions with the known values.
+
+# after doing this throughout our data, we have an error rate for k = 3. 
+# We do the same for k = 1, k = 2. k = 4, and so on,
+# up to some maximum value of k that we feel is enough.
+# We then use whichever value of k worked best in our training data for future predictions.
+
+# So how would we code that in R? Here's a naive approach:
+
+preda <- function(x,k) {
+  n <- length(x)
+  k2 <- k/2
+  # the vector pred will contain our predicted values
+  pred <- vector(length=n-k)
+  for (i in 1:(n-k)) {
+    if (sum(x[i:(i+(k-1))]) >= k2) pred[i] <- 1 else pred[i] <- 0
+  }
+  return(mean(abs(pred-x[(k+1):n])))
+}
+
+# heart of the code is line 7. There, we're predicting day i+k 
+# (prediction to be stored in pred[1]) from the k days previous to it
+# –– That is days i,...,i+k-1.
+# thus, we need to count the 1s among those days.
+# since working with 0 and 1 data, the number of 1s is simply the sum of x[j] among those days
+# which we can conveniently obtain as follows.
+
+sum(x[i:(i+(k-1))])
+
+# The use of sum() and vector indexing allow us to do this computation compactly,
+# avoiding the need to write a loop,
+# So it's simpler and faster.
+# This is typical R
+# The same is true for this expression, on line 9:
+
+mean(abs(pred-x[(k+1):n]))
+
+# pred contains the predicted values, while x[(k+1):n] has the actual values for the days in question.
+# subtracting the second from the first gives us values of either 0, 1, or -1.
+# 1 or -1 correspond to prediction errors in one direction or the other, predicting 0 when the true value was 1 or vice versa.
+# taking absolute values with abs(), we have 0s and 1s, the latter corresponding to errors.
+
+# So now we know where days gave us errors. It remains to calculate the proportion of errors.
+# We do this by applying mean(), 
+# where we are exploiting the mathematical fact that the mean of 0 and 1 data is the proportion of 1s. 
+# This is a common R trick.
+
+# The above coding of our preda() function is fairly straightforward and it has the advantage of simplicity and compactness.
+# However, it is probably slow.
+# We could try to speed it up by vectorizing the loop.
+# However, that would not address the major obstacle to speed here,
+# which is all of the duplicate computation that the code does.
+# For successive values of i in the loop, sum() is being called on vectors that differ by only two elements.
+# except in cases in which cases k is really small, this could really slow things down.
+
+# So let's rewrite the code to take advantage of previous computation.
+# In each iteration of the loop, we will update the previous sum we found, rather than compute the new sum from scratch.
+
+pred <- function(x,k) {
+  n <- length<x>
+  k2 <- k/2
+  pred <- vector(length=n-k)
+  sm <- sum(x[1:k])
+  if (sm >= k2) pred[1] <-1 else pred[1] <- 0
+  if (n-k >=2) {
+    for (i in 2:(n-k)) {
+      sm <- sm + x[i+k-1] - x[i-1]
+      if (sm >= k2) pred[i] <- 1 else pred[i] <- 0
+    }
+  }
+  return(mean(abs(pred-x[(k+1]):n])))
+}
