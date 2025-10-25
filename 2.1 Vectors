@@ -523,4 +523,33 @@ mean(abs(pred-x[(k+1):n]))
 # 1 or -1 correspond to prediction errors in one direction or the other, predicting 0 when the true value was 1 or vice versa.
 # taking absolute values with abs(), we have 0s and 1s, the latter corresponding to errors.
 
+# So now we know where days gave us errors. It remains to calculate the proportion of errors.
+# We do this by applying mean(), 
+# where we are exploiting the mathematical fact that the mean of 0 and 1 data is the proportion of 1s. 
+# This is a common R trick.
 
+# The above coding of our preda() function is fairly straightforward and it has the advantage of simplicity and compactness.
+# However, it is probably slow.
+# We could try to speed it up by vectorizing the loop.
+# However, that would not address the major obstacle to speed here,
+# which is all of the duplicate computation that the code does.
+# For successive values of i in the loop, sum() is being called on vectors that differ by only two elements.
+# except in cases in which cases k is really small, this could really slow things down.
+
+# So let's rewrite the code to take advantage of previous computation.
+# In each iteration of the loop, we will update the previous sum we found, rather than compute the new sum from scratch.
+
+pred <- function(x,k) {
+  n <- length<x>
+  k2 <- k/2
+  pred <- vector(length=n-k)
+  sm <- sum(x[1:k])
+  if (sm >= k2) pred[1] <-1 else pred[1] <- 0
+  if (n-k >=2) {
+    for (i in 2:(n-k)) {
+      sm <- sm + x[i+k-1] - x[i-1]
+      if (sm >= k2) pred[i] <- 1 else pred[i] <- 0
+    }
+  }
+  return(mean(abs(pred-x[(k+1]):n])))
+}
