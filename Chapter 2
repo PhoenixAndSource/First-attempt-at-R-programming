@@ -553,3 +553,43 @@ pred <- function(x,k) {
   }
   return(mean(abs(pred-x[(k+1]):n])))
 }
+
+# The key is line 9. Here we are updating sm, by subtracting the oldest element making the sum (x[i-1]) and adding the new one (x[i+k-1]).
+# Yet another approach to this problem is to use the R function cumsum(),
+# which forms cumulative sums from a vector
+# example:
+
+> y <- c(5,2,-3,8)
+> cumsum(y)
+[1] 5 7 4 12
+
+# here, the cumulative sums of y are 5 = 5, 5 + 2 = 7, 5 + 2 (-3) = 4 and 5 + 2 + (-3) + 8 = 12, the values returned by cumsum().
+# the expression sum(x[i:(i+(k-1)) in preda() in the example suggests using differences of cumsum() instead:
+
+predc <- function(x,k) {
+  n <- length(x)
+  k2 <- k/2
+  # the vector red will contain our predicted values
+  pred <-vector(length=n-k)
+  csx <- c(0,cumsum(x))
+  for (i in 1:(n-k)) {
+    if (csx[i+k] - csx[i] >= k2) pred[i] <- 1 else pred[1] <- 0
+  }
+  return(mean(abs(pred-x[(k+1):n])))
+}
+
+# Instead of applying sum() to a window of k consecutive elements in x, like this:
+
+sum(x[i:(i+(k-1))
+
+# we compute that same sum by finding the difference between the cumalative sums at the beginning of that window, like this:
+
+csx[i+k] - csx[i]
+
+# note the prepending of a 0 in the vector of cumulative sums:
+
+csx <- c(0,cumsum(x))
+
+# this is needed in order to handle the case i = 1 correctly.
+# this approach in predc() requires just one subtraction operation per iteration of the loop,
+# compared to two in predb().
