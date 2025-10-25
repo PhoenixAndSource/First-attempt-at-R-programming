@@ -500,3 +500,28 @@ preda <- function(x,k) {
   }
   return(mean(abs(pred-x[(k+1):n])))
 }
+
+# heart of the code is line 7. There, we're predicting day i+k 
+# (prediction to be stored in pred[1]) from the k days previous to it
+# –– That is days i,...,i+k-1.
+# thus, we need to count the 1s among those days.
+# since working with 0 and 1 data, the number of 1s is simply the sum of x[j] among those days
+# which we can conveniently obtain as follows.
+
+sum(x[i:(i+(k-1))])
+
+# The use of sum() and vector indexing allow us to do this computation compactly,
+# avoiding the need to write a loop,
+# So it's simpler and faster.
+# This is typical R
+# The same is true for this expression, on line 9:
+
+mean(abs(pred-x[(k+1):n]))
+
+# pred contains the predicted values, while x[(k+1):n] has the actual values for the days in question.
+# subtracting the second from the first gives us values of either 0, 1, or -1.
+# 1 or -1 correspond to prediction errors in one direction or the other, predicting 0 when the true value was 1 or vice versa.
+# taking absolute values with abs(), we have 0s and 1s, the latter corresponding to errors.
+
+
+
