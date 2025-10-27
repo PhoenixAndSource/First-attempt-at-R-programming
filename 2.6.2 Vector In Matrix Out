@@ -1,0 +1,45 @@
+# 2.6.2 Vector In, Matrix Out
+# The vectorized functions we've been working with so far have scalar return values.
+# Calling sqrt() on a number gives us a number.
+# If we apply this function to an eight-element vector, 
+# we get eight numbers,
+# thus another eight-element vector, as output.
+# but what if our function itself is vector-valued, as z12() is here:
+
+z12 <- function(z) return(c(z,z^2))
+
+# Applying z12() to 5 for example, gives us the two-element vector (5,25).
+# If we apply this function to an eight-element vector, it produces 16 numbers:
+
+x <- 1:8
+> z12(x)
+ [1] 1 2 3 4 5 6 7 8 1 4 9 16 25 36 49 64
+
+# It might be more natural to have these arranged as an 8-by-2 matrix,
+# which we can do with the matrix function:
+
+> matrix(z12(x),nco1=2)
+      [,1]  [,2]
+[1,]     1     1
+[2,]     2     4
+[3,]     3     9
+[4,]     4    16
+[5,]     5    25
+[6,]     6    36
+[7,]     7    49
+[8,]     8    64
+
+# But we can streamline things using sapply() (or "simplfy apply").
+# The call sapply(x,f) applies the function f() 
+# to each element of x and 
+# then converts the result to a matrix.
+# Here's an example:
+
+> z12 <- function(z) return(c(z,z^2))
+> sapply(1.8,z12)
+    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
+[1,]   1    2    3    4    5    6    7    8
+[2,]   1    4    9   16   25   36   49   64 
+
+# We do get a 2-by-8 matrix, not an 8-by-2 one, but it's just as useful this way.
+# more on sapply() in Chapter 4._
