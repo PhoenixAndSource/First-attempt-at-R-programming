@@ -1,0 +1,40 @@
+# One use in NULL is to build up vectors in loops,
+# in which each iteration adds another element to the vector.
+# in this simple example, we build up a vector of even numbers:
+
+#build up a vector of the even numbers in 1:10
+> z <- NULL
+> for (i in 1:10) if (i %%2 == 0) z <- c(z,i)
+> z
+[1] 2 4 6 8 10
+
+# %% is the modulo operator, giving remainders upon division.
+# for example, 13 %% 4 is 1, as the remainder of dividing 13 by 4 is 1. 
+# (section 7.2 has a list of arithmetic and logic operators.)
+# thus the example loop starts with a NULL vector and then adds the element of 2 to it, then 4, and so on.
+
+# This is a very artificial example, and there are much better ways to do this particular task.
+# Here are two more ways another way to find even numbers in 1:10:
+
+> seq(2,10,2)
+[1] 2 4 6 8 10
+> 2*1:5
+[1] 2 4 6 8 10
+
+# But the point here is to demonstrate the difference between NA and NULL. 
+# If we were to use NA instead of NULL in the preceding example
+# We would pick up an unwanted NA:
+
+> z <- NA
+> for (i in 1:10) if (i %%2 == 0) z <- c(z,i)
+> z
+[1] NA 2 4 6 8 10
+
+NULL values really are counted as nonexistent, as you can see here:
+
+> u <- NULL
+> length(u)
+[1] 0
+> v <- NA
+> length(v)
+[1] 1
