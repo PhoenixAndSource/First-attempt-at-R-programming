@@ -1,1 +1,40 @@
+# those with a background in other scripting languages may be aware of "no such animal" values,
+# such as None in Python and undefined in Perl.
+# R actually has two such values: NA and NULL.
+# In statistical data sets, we often encounter missing data, 
+# which we represent in R with the value NA.
+# NULL, on the other hand, represents that the value in question simply does not exist.
+# (rather than being existent but unknown)
 
+# 2.7.1 Using NA
+# In many of R's statistical functions, 
+# we can instruct the function to skip over any missing values, or NAs
+# example:
+
+> x <- c(88,NA,12,168,13)
+> x
+[1] 88 NA 12 168 13
+> mean(x)
+[1] NA
+> mean(x,na.rm=T)
+[1] 70.25
+> x <- c(88,NULL,12,168,13)
+> mean(x)
+[1] 70.25
+
+# In the first call, mean() refused to calculate, as one value in x was NA.
+# But by setting the optional argument na.rm (NA remove) to true (T),
+# we calculated the mean of the remaining elements.
+# But R automatically skipped over the NULL value, which we'll look at in the next section.
+# There are multiple NA values, one for each mode:
+
+> x <- c(5,NA,12)
+> mode(x[1])
+[1] "numeric"
+> mode(x[2])
+[1] "numeric"
+> y <- c("abc","def",NA)
+> mode(y[2])
+[1] "character"
+> mode(y[3])
+[1] "character"
