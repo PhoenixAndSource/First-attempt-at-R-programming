@@ -15,3 +15,14 @@ $a
 
 $b
 [1] 4
+
+# In the first example, we are mixing integer and character modes, 
+# a combination that R chooses to reduce to the latter mode.
+# In the second example, R considers the list mode to be of lower precedence in the mixed expressions
+# which we''ll discuss further in Section 4.3.
+# You might not wish to write code that makes such combinations, but you may encounter code in which this occurs,
+# so it's important to understand the effect,
+# another point to keep in mind is that c() has a flattening effect for vectors, as in this example:
+
+> c(5,2,c(1.5,6))
+[1] 5.0 2.0 1.5 6.0
