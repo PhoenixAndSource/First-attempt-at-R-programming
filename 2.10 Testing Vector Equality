@@ -1,0 +1,55 @@
+# Suppose we wish to test whether two vectors are equal.
+# The naive approach, using ==, won't work.
+
+> x <- 1:3
+> y <- c(1,3,4)
+> x == y
+[1] TRUE FALSE FALSE
+
+# What happened?
+# The key point is that we are dealing with vectorization.
+# just like almost anything else in R, == is a function.
+
+> "=="(3,2)
+[1] FALSE
+> i <-2
+> "=="(i,2)
+[1] TRUE
+
+# In fact, == is a vectorized function.
+# The expression x == y applies the function ==() to the elements of x and y.
+# yielding a vector of Boolean values.
+# What can be done instead? One option is to work with the vectorized nature of ==,
+# applying the function all():
+
+> x <- 1:3
+> y <- c(1,3,4)
+> x == y
+[1] TRUE FALSE FALSE
+> all(x == y)
+[1] FALSE
+
+# Applying all() to the result of == asks whether all of the elements of the latter are true, 
+# which is the same as asking whether x and y are identical.
+# or even better, we can simply use the identical function, like this:
+
+> identical(x,y)
+[1] FALSE
+
+# Be careful, though because the word identical really means what it says.
+# Consider this little R session:
+
+> x <- 1:2
+> y <- c(1,2)
+> x
+[1] 1 2
+> y
+[1] 1 2
+> identical(x,y)
+[1] FALSE
+> typeof(x)
+[1] "integer"
+> typeof(y)
+[1] "double"
+
+# So, : produces integers while c() produces floating-point numbers. Who knew?
