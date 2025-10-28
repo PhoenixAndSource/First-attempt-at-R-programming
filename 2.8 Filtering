@@ -3,7 +3,7 @@
 # Another feature reflecting the functional language nature of R is filtering.
 # This allows us to extract a vector's elements that satisfy certain conditions.
 # Filtering is one of the most common operations in R,
-# as statistial analyses often focus on data that satisfies conditions of interest.
+# as statistical analyses often focus on data that satisfies conditions of interest.
 
 # 2.8.1 Generating Filtering Indices
 
@@ -84,7 +84,7 @@ z*z > 8
 > x
 [1] 1 3 0 2 0
 
-# 2.8.2 Filtering with the subset() Functiom
+# 2.8.2 Filtering with the subset() Function
 # Filtering can also be done with the subset() function.
 # When applied to vectors, 
 # the difference between using this function and ordinary filtering 
@@ -121,4 +121,29 @@ z*z > 8
 # is evaluated to (TRUE,FALSE,TRUE,TRUE). 
 # The which() function then simply reports which elements of the latter expression are TRUE
 
-One handy (though somewhat wasteful) use of which()
+# One handy (though somewhat wasteful) use of which() is for 
+# determining the location within a vector at which the first occurence of some condition holds
+# for example, recall our code on page 27 to find the first 1 value within a vector x:
+
+first1 <- function(x) {
+  for (i in 1:length(x)) {
+    if (x[i == 1]) break # break out of loop
+  }
+  return(i)
+}
+
+# here is an alternative way of coding this task:
+
+first1a <- function(x) return(which(x == 1)[1])
+
+# The call to which() yields the indices of the 1s in x. These indices will be given in the form of a vector, 
+# and we ask for element index 1 in that vector,
+# which is the index of the first 1.
+
+# That is much more compact. On the other hand, it's wasteful, 
+# as it actually finds all instances of 1s in x, when we need only the first 1.
+# That is much more compact. On the other hand, it's wasteful,
+# As it actually finds all instances of 1s in x, when we need only the first.
+# So although it is a vectorized approach and thus possibly faster,
+# If the first 1 comes early in x,
+# This approach may actually be slower.
