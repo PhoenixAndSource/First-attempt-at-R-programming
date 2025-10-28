@@ -114,7 +114,7 @@ z*z > 8
 [1] 1 3 4
 
 # The result says that elements 1,3 and 4 of z have squares greater than 8.
-# As with filtering, it is important to understand exactly what occurred in the preceding code. The expresasion
+# As with filtering, it is important to understand exactly what occurred in the preceding code. The expression
 
 z*z > 8
 
@@ -122,12 +122,12 @@ z*z > 8
 # The which() function then simply reports which elements of the latter expression are TRUE
 
 # One handy (though somewhat wasteful) use of which() is for 
-# determining the location within a vector at which the first occurence of some condition holds
+# determining the location within a vector at which the first occurrence of some condition holds
 # for example, recall our code on page 27 to find the first 1 value within a vector x:
 
 first1 <- function(x) {
   for (i in 1:length(x)) {
-    if (x[i == 1]) break # break out of loop
+    if (x[i] == 1) break # break out of loop
   }
   return(i)
 }
