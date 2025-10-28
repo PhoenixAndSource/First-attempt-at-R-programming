@@ -1,0 +1,29 @@
+# The elements of a vector can optionally be given names. 
+# for example, say we have a 50-element vector showing the population of each state in the United States.
+# We could name each element according to its state name, such as "Montana" and "New Jersey". 
+# This might in turn lead to naming points in plots and so on.
+# We can assign or query vector element names via the name() function:
+
+> x <- c(1,2,4)
+> names(x)
+NULL
+> names(x) <- c("a","b","ab")
+> names(x)
+[1] "a" "b" "ab"
+> x
+a b ab
+1 2 4
+
+# We can remove the names from a vector by assigning NULL:
+
+> names(x) <- NULL
+> x
+[1] 1 2 4
+
+# We can even reference elements of the vector by name:
+
+> x <- c(1,2,4)
+> names(x) <- c("a","b","ab")
+> x["b"]
+b
+2
