@@ -24,5 +24,90 @@
 # output length is 1
 # less than input
 findud <- function(v) {
- 
+ vud <- v[-1] - v[-length(v)]
+ return(ifelse(vud > 0,1,-1))
 }
+
+udcorr <- function(x,y) {
+ ud <- lapply(list(x,y),findud)
+ return(mean(ud[[1]] == ud[[2]]))
+}
+
+# Here's an example
+
+> x
+ [1] 5 12 13 3 6 0 1 15 16 8 88
+> y
+ [1] 4 2 3 23 6 10 11 12 6 3 2
+> udcorr(x,y)
+[1] 0.4
+
+# in this example, x and y increased together in 3 of the 10 opportunities
+# (the first time being the increases from 12 to 13 and 2 to 3) and decreased together once.
+# that gives an association measure of 4/10 = 0.4
+# let's see how this works. This first order of business is to recode x and y to seqauences of 1s and -1, 
+# with a value of 1 meaning an increase of the current observation over the last.
+# we've done that in lines 5 and 6.
+
+# for example. think what happens in line 5 when we call findud() with 
+# v having a length of 6 elements.
+# then v[-1] will be a vector of 15 elements, starting with the second element in v.
+# Similarly, v[-length(v)] will again be a vector of 15 elements,
+# this time starting from the first element in v.
+# the result is that we are suvtracting the original series from the series obtained by shifting rightward by one time period. 
+# The difference gives us the sequence ofg increase.decrease statuses for each time period—exactly what we need.
+
+# We then need to change those differences to 1 and -1s, according to whether a difference is positive or negative.
+# The ifelse() call does this easily, compactly, and with smaller execution time than a loop version of the code would have.
+
+# we then need to change those differences to 1 and -1s, according to whether a difference is positive or negative.
+# The ifelse() call does this easily, compactly, and with smaller execution time than a loop version of the code would have.
+
+# We could have then written two calls to findud(): one for x and the other for y,
+# but by putting x and y into a list and then using lapply(), we can do this without duplicating code.
+# If we were applying the same operation to many vectors instead of only two, 
+# especially in the case of a variable number of vectors, 
+# using lapply() like this would be a big help in compacting and clarifying the code, and it might be faster as well.
+# We then find the fraction of matches, as follows:
+
+return(mean(ud[[1]] == ud[[2]]))
+
+# Note that lapply() returns a list. The components are our 1/-1-coded vectors. 
+# The expression ud[[1]] == ud[[2]] returns a vector of TRUE and FALSE values, 
+# which are treated as 1 and 0 values by mean()
+# that gives us the desired fraction.
+
+# A more advanced version would make use of R's diff() function, which does lag operations for vectors.
+# We might, for instance, compare each element with the element three spots behind it, termed a lag of 3.
+# The default lag balue is one time period, just what we need here.
+
+> u
+[1] 1 6 7 2 3 5
+> diff(u)
+[1] 5 1 -5 1 2
+
+# Then line 5 in the preceding example would becomoe this:
+
+vud <- diff(v)
+
+# We can make the code really compact by using another advanced R function, 
+# sign(), which converts the numbers in its argument vector to 1, 0, or -1 
+# depending on whether they are positive, zero, or negative.
+# Here is an example:
+
+> u
+[1] 1 6 7 2 3 5
+> diff(u)
+[1] 5 1 -5 1 2
+> sign(diff(u))
+[1] 1 1 -1 1 1
+
+# using sign() then allows us to turn this udcorr()function into a one-liner, as follows:
+
+> uddcorr <- function(x,y) mean(sign(diff(x)) == sign(diff(y)))
+
+# This is certainly a lot shorter than the original version. But is it better?
+# For most people, it probably would take longer to write.
+# And although the code is short, it is arguably harder to understand.
+# all R programmers must find their own "happy medium" in trading brevity for clarity.
+
