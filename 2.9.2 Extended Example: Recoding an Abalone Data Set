@@ -1,0 +1,124 @@
+# Because of the vector nature of arguments,
+# you can next ifelse() operations.
+# in the following example, which involves an abalone data set,
+# gender is coded as M, F, or I (for infant).
+# We wish to recode those characters as 1,2, or 3.
+# The real data set consists of more than 4000 observations
+# but for our example, we'll say we have just a few, stored in g:
+
+> g
+[1] "M" "F" "F""I" "M" "M" "F"
+> ifelse(g == "M",1,ifelse(g == "F",2,3))
+[1] 1 2 2 3 1 1 2
+
+# What actually happens in that nested ifelse()? 
+# Let's take a careful look.
+# First, for the sake of concreteness, let's find what the formal argument names are in the function ifelse():
+
+> args(ifelse)
+function (test, yes, no)
+NULL
+
+# Remember, for each element of test that is true, the function evaluates to the corresponding element in yes.
+# Similarly, if test[i] is false, the function evaluates to no[i].
+# All values so generated are returned together in a vector.
+# In our case here, R will execute the outer ifelse() call first, in which test is g == "M",
+# and yes is 1 (recycled); no will (later) be the result of executing ifelse(g=="F",2,3).
+# Now since test[1] is true, we generate yes[1], which is 1.
+# So, the first element of the return value of our outer call will be 1.
+
+# Next R will evaluate test[2] That is false, so R needs ro find no[2].
+# R now needs to execute the inner ifelse call. It hasn't before,
+# because it hasn't needed it until now. R uses the principle of lazy evaluation,
+# meaning that an expression is not computed until it is needed.
+
+# R will now evaluate ifelse(g=="F",2,3), yielding (3,2,2,3,3,3,2);
+# this is no for the outer ifelse() call, so the latter's second return elelment will be the second element of 
+# (3,2,2,3,3,3,2), which is 2.
+
+# When the outer ifelse() call gets to test[4], it will see that value to be false and thus will return no[4]
+# Since R had already computed no, it has the value needed, which is 3.
+# Remember that the vectors involved could be columns in matrices, which is a very common scenario. 
+# Say our abalone data is stored in the matrix ab, with gender in the first column.
+# Then if we wish to recode as in the preceding example. we could do it this way:
+
+> ab[,1] <- if else(ab[,1]) == "M",1,ifelse(ab[,1] == "F",2,3))
+
+# Suppose we wish to form subgroups according to gender. We could use which() to find the element numbers
+# corresponding to M,F, and I:
+
+> m <- which(g == "M")
+> f <- which(g == "F")
+> i <-which(g == "I")
+> m
+[1] 1 5 6
+> f
+[1] 2 3 7
+> i 
+[1] 4
+
+# Going one step further, we could save these groups in a list like this:
+> grps <- list()
+> for (gen in c("M,"F","I")) grps[[gen]] <- which(g==gen)
+> grps
+$M
+[1] 1 5 6
+
+$F
+[1] 2 3 7
+
+$I
+[1] 4
+
+# Note that we take advantage of the fact that R's for() loop has the ability to loop through a vector of strings. 
+# (You'll see a more efficient approach in Section 4.4)
+# We might use our recoded data to draw some graphs,
+# exploring the various variables in the abalone data set.
+# Let's summarize the nature of the variables by adding the following header to the file:
+
+Gender,Length,Diameter,Height,WholeWt,ShuckedWT,ViscWt,ShellWt,Rings
+
+# We could, for instance, plot diameter versus length, 
+# with a separate plot for males and females, using the following code:
+
+aba <- read.csv("abalone.data", header=T,as.is=T)
+grps <- list()
+for (gen in c("M","F")) grps[[gen]] <- which(aba[,1]==gen)
+abam <- aba[grps$M,]
+abaf <- aba[grps$F,]
+plot(abam$Length,abam$Diameter)
+plot(abaf$Length,abaf$Diameter,pch="x",new=FALSE)
+
+# First, we read in the data set, assigning it to the variable aba (to remind us that it's abalone data).
+# The call to read.csv() is similar to the read.table() call we used in Chapter 1, as we'll discuss in Ch 6 and 10.
+# We then form abam and abaf,
+# the submatrices of aba corresponding to males and females, respectively.
+
+# Next, we create the plots. The first call does a scatter plot of diameter against length for the males.
+# The second call is for the females
+# Since we want this plot to be superimposed on the same graph as the males, 
+# we set the argument new=FALSE,
+# instructing R to not create a new graph.
+# the argument pch="x" means that 
+# we want the plot characters for the female graph to consist of x characters, rather than the default o characters.
+
+# The graph (for the entire data set) is shown in Fig 2-1.
+# by the way, it is not completely satisfactory,
+# apparently, there is such a strong correlation 
+# between diameter and length that the points densely fill up a section of the graph,
+# and the male and female plots pretty much coincide.
+# (it does appear tha males have more variability, though.)
+# This is a common issue in statistical graphics.
+# a finer graphical analysis may be more illuminating, 
+# but at least here we see eveidence of the strong correlation 
+# and that the relation does not vary much across genders.
+
+# we can compact the plotting code in the previous example by yet another use of ifelse.
+# This exploits the fact that the plot parameter pch is allowed to be a vector rather than a single character.
+# in other words, R allows us to specify a different plot character for each point.
+
+pchvec <- ifelse(aba$Gender == "M","o","x")
+plot(aba#Length,aba$Diameter,pch=pchvec)
+
+# Here we've omitted the recoding to 1,2, and 3, but you may wish to retain it for various reasons.
+
