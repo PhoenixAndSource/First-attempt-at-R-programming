@@ -1,0 +1,35 @@
+# In addition to the usual if-then-else construct found in most languages, 
+# R also includes a vectorized version, the ifelse() function. 
+# The form is as follows:
+
+ifelse(b,u,v)
+
+# Where b is a Boolean vector, and u and v are vectors.
+# The return value is itself a vector; element i is u[i] if b[i] is true, or v[i] if b[i] is false.
+# The concept is pretty abstract, so here is an example:
+
+> x <- 1:10
+> y <- ifelse(x %% 2 == 0,5,12) # %% is the mod operator
+> y
+[1] 12 5 12 5 12 5 12 5 12 5
+
+# Here we wish to produce a vector in which there is a 5 wherever x is even or a 12 wherever x is odd.
+# So the actual argument corresponding to the formal argument b is (F,T,F,T,F,T,F,T,F,T). 
+# The second actual argument, 5, corresponding to u, is treated as (5,5,...)(ten 5s) by recycling.
+# The third argument, 12 is also recycled, to (12,12...).
+
+# Here is another example:
+
+> x <- c(5,2,9,12)
+> ifelse(x > 6,2*x,3*x)
+[1] 15 6 18 24
+
+# We return a vector consisting of the elements of x, either multiplied by 2, or 3
+# depending on whether the element is greater than 6.
+# Again, it helps to think through what is really occuring here.
+# The expression x > 6 is a vector of Booleans.
+# If the ith component is true, 
+# then the ith element of the return value will be set to the ith element of 2*x;
+# otherwise, it will be set to 3*x[i], and so on.
+# The advantage of ifelse() over the standard of 
+# if-then-else construct is that it is vectorized, thus potentially much faster.
