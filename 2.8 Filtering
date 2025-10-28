@@ -1,0 +1,41 @@
+# 2.8 Filtering
+
+# Another feature reflecting the functional language nature of R is filtering.
+# This allows us to extract a vector's elements that satisfy certain conditions.
+# Filtering is one of the most common operations in R,
+# as statistial analyses often focus on data that satisfies conditions of interest.
+
+# 2.8.1 Generating Filtering Indices
+
+# example:
+> z <- c(5,2,-3,8)
+> w <- z[z*z > 8]
+> w
+[1] 5 -3 8
+
+# Looking at this code in an intuitive, "What is our intent?" manner,
+# we see that we asked R to extract from z all its elements whose squares were
+# greater than 8 and then assign that subvector to w.
+
+# but filtering is such a key operation in R that it's worthwhile to examine 
+# the technical details of how R achieves our intent above.
+# let's look at it piece by piece:
+
+> z <- c(5,2,-3,8)
+> z
+[1] 5 2 -3 8
+> z*z > 8
+[1] TRUE FALSE TRUE TRUE
+
+# Evaluation of the expression z*z > 8 gives us a vector of Boolean values! Important to understand how
+# First, in the expression z*z > 8, everything is a vector or vector operator:
+# - since z is a vector, that means z*z will also be a vector (of the same length as z).
+# - Due to recycling, the number 8 (or vector of length 1) becomes the vector (8,8,8,8) here.
+# - The operator >, like +, is actually a function.
+
+# let's look at an example of that last point:
+
+> ">"(2,1)
+[1] TRUE
+> ">"(2,5)
+[1] FALSE
