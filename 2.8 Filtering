@@ -39,3 +39,86 @@
 [1] TRUE
 > ">"(2,5)
 [1] FALSE
+
+# thus the following:
+z*z > 8
+
+# is really this:
+
+"z"(z*z,8)
+
+# In other words, we are applying a function to vectors
+# ––yet another case of vectorization, no different from the others you've seen.
+# And thus th result is a vector––In this case, a vector of Booleans.
+# Then the resulting Boolean values are used to cull out the desired elements of z:
+
+> z <- c(5,2,-3,8)
+> j <- z*z > 8
+> j
+[1] TRUE FALSE TRUE TRUE
+> y <- c(1,2,30,5)
+> y[j]
+[1] 1 30 5
+
+# or more compactly, we could write the following:
+
+> z <- c(5,2,-3,8)
+> y <- c(1,2,30,5)
+> y[z*z > 8]
+[1] 1 30 5
+
+# Again, the point is that in this example, we are using one vector, z, 
+# to determine indices to use in filtering another vector, y.
+# In contrast, our earlier example used z to filter itself.
+
+# Here's another example, this one involving assignment.
+# say we have a vector x in which we wish to replace all elements larger than a 3 with a 0.
+# We can do that very compactly––in fact, in just one line:
+
+> x[x > 3] <- 0
+
+# Let's check:
+
+> x <- c(1,3,8,2,20)
+> x[x > 3] <- 0
+> x
+[1] 1 3 0 2 0
+
+# 2.8.2 Filtering with the subset() Functiom
+# Filtering can also be done with the subset() function.
+# When applied to vectors, 
+# the difference between using this function and ordinary filtering 
+# lies in the manner in which NA values are handled.
+
+> x <- c(6,1:3,NA,12)
+> x
+[1] 6 1 2 3 NA 12
+> x[x > 5]
+[1] 6 NA 12
+> subset(x,x > 5)
+[1] 6 12
+
+# When we did ordinary filtering in the previous section, R basically said,
+# "Well, x[5] is unknown, so it's also unknown whether its square is greater than 5."
+# But you may not want NAs in your results.
+# When you wish to exclude NA values,
+# Using subset() saves you the trouble of removing the NA values yourself.
+
+# 2.8.3 The Selection Function which()
+# As you've seen, filtering consists of extracting elements of a vector z that satisfy a certain condition.
+# In some cases, though, we may just want to find the positions within z which the condition occurs.
+# We can do this using which(), as follows:
+
+> z <- c(5,2,-3,8)
+> which(z*z > 8)
+[1] 1 3 4
+
+# The result says that elements 1,3 and 4 of z have squares greater than 8.
+# As with filtering, it is important to understand exactly what occurred in the preceding code. The expresasion
+
+z*z > 8
+
+# is evaluated to (TRUE,FALSE,TRUE,TRUE). 
+# The which() function then simply reports which elements of the latter expression are TRUE
+
+One handy (though somewhat wasteful) use of which()
