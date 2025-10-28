@@ -1,0 +1,28 @@
+# In assessing the statistical relation of two variables,
+# there are many alternatives to the standard correlation measure
+# (Pearson product-moment correlation).
+# Some readers may have heard of the Spearman rank correlation, for example.
+# These alternative measures have various motivations,
+# such as robustness to outliers
+# which are extreme and possibly erroneous data items.
+
+# Let's propose a new such measure, not necessarily for novel statistical merits
+# (actually it is related to one in broad use, Kendall's τ or tau.)
+# but to illustrate some of the R programming techniques introduced in this chapter,
+# especially ifelse().
+
+# consider vectors x and y, which are time series,
+# for example for measurements of air temperature and pressure collected once each house.
+
+# we'll defend our measure of association between them 
+# to be the fraction of the time x and y increase or decrease together—
+# that is in proportion of I for which y[ i + 1 ] - y[ i ] has the same sign as x[ i + 1] - x[ I ]
+# here is the code:
+
+# fundud() converts vector v to 1s, 0s, representing an element
+# increasing or not, relative to the previous one;
+# output length is 1
+# less than input
+findud <- function(v) {
+ 
+}
