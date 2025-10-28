@@ -1,0 +1,17 @@
+# In this section, we'll discuss a couple of miscellaneous facts related to the concatenate function, c()
+# if the arguments you pass to c() are of differing modes, 
+# they will be reduced to a type that is the lowest common denominator as follows:
+
+> c(5,2,"abc")
+[1] "5" "2" "abc"
+> c(5,2,list(a=1,b=4))
+[[1]]
+[1] 5
+
+[[2]]
+[1] 2
+$a
+[1] 1
+
+$b
+[1] 4
