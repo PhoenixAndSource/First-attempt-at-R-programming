@@ -1,0 +1,39 @@
+# In statistics, outliers are data points that differ greatly from most of the other observations. 
+# As such, they are treated either as suspect (they might be erroneous) or unrepresentative
+# (such as Bill Gate's income among the incomes of the citizens of the state of Washington).
+# Many methods have been devised to identify outliers. We'll build a very simple one here.
+
+# Pretend we have retail sales data in a matrix rs. 
+# Each row of data is for a different store,
+# and observations within a row are daily sales figures.
+# As a very simple approach, let's write code to identify the most deviant observation for each store.
+# We'll define that as the observation furthest from the median value for that store. Here's the code:
+
+findols <- function(x) {
+    findol <- function(xrow) {
+        mdn <- median(xrow)
+        devs <- abs(xrow-mdn)
+        return(which.max(devs))
+    }
+    return(apply(x,1,findol))
+}
+
+# Our call will be as follows:
+
+findols(rs)
+
+# How will this work? First, we need a function to specify in our apply() call.
+# Since this function will be applied to each row of our sales matrix, 
+# our description implies that it needs to report the index of the most deviant observation in a given row.
+# Our function findol() does that, in lines 4 and 5.
+# (Note that we've defined one function within another here, 
+# A common practive if the inner function is short.)
+# In the expression xrow-mdn, we are subtracting a number 
+# that is a one-element vector from a vector that generally will have a length greater than 1.
+# Thus, recycling is used to extend mdn to conform with xrow before the subtraction.
+# Then in line 5, we use the R function which.max().
+# Instead of finding the maximum value in a vector,
+# which the max() function does, which,max() tells us where that maximum value occurs 
+# — that is, the index where it occurs. This is just what we need.
+# finally, in line 7, we ask R to apply findol() to each row of x,
+# thus producing the indices of the most deviant observation in each row.
