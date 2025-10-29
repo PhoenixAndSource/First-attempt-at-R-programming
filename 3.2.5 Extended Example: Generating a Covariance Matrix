@@ -1,0 +1,58 @@
+# This example demonstrates R's row() and col() functions, whose arguments and matrices.
+# For example, for a matrix a, row(a[2,8]) will return the row number of that element of a, which is 2.
+# Well, we knew row(a[2,8]) is in row 2, didn't we? So why would this function be useful?
+
+# Let's consider an example. When writing simulation code for multi-variate normal distributions—
+# for instance, using mvrnorm() from the MASS library — we need to specify a covariance matrix.
+# The key point for out purposes here is that the matrix is symmetric;
+# For example, the element in row 1, column 2, is equal to the element in row 2, column 1.
+
+# Suppose that we are working with an n-variate normal distribution.
+# Our matrix will have n rows and n columns, and we wish each of the n variables to have variance 1,
+# with correlation rho between pairs of variables.
+# For n = 3 and rho = 0.2, for example, the desired matrix is as follows:
+
+(   1  0.2  0.2
+  0.2    1  0.2
+  0.2  0.2    1 )
+
+# Here is code to generate this kind of matrix:
+
+makecov <- function(rho,n) {
+  m <- matrix(nrow=n,ncol=n)
+  m <- ifelse(row(m) == col(m),1,rho)
+  return(m)
+}
+
+# Let's see how this works. First, as you probably guessed, col() returns
+# the column number of its argument, just as row() does for the row number.
+# Then the expression row(m) in line 3 returns a matrix of integer values,
+# Each one showing the row number of the corresponding element of m, 
+# For instance
+
+> z
+    [,1] [,2]
+[1,]   3    6
+[2,]   4    7
+[3,]   5    8
+> row(z)
+    [,1] [,2]
+[1,]   1    1
+[2,]   2    2
+[3,]   3    3
+
+# Thus the expression row(m) == col(m) in the same line returns a matrix of TRUE and FALSE values,
+# TRUE values on the diagonal of the matrix and FALSE values elsewhere.
+# Once again, keep in mind that binary operators– in this case, == are functions.
+# Of course, row() and col() are functions too, so this expression:
+
+row(m) == col(m)
+
+# applies that function to each element of the matrix m, 
+# and it returns a TRUE/FALSE matrix of the same size as m.
+# The ifelse() expression is another function call.
+
+ifelse(row(m)) == col(m),1rho
+
+# In this case, with the argument being the TRUE/FALSE matrix just discussed,
+# the result is to place the values 1 and rho in tthe proper places in our output matrix.
