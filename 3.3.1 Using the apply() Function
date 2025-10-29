@@ -1,0 +1,8 @@
+# Applying Functions to Matrix Rows and Columns
+# One of the most famous and most used features of R is the *apply() family of functions, such as apply(), lapply(). 
+# Here, we'll look at apply(), which instructs R
+# to call a user-specified function on each of the rows or each of the columns of a matrix.
+
+# This is the general form of apply for matrices:
+
+apply(m,dimcode,f,fargs)
