@@ -1,0 +1,110 @@
+# Filtering can be done with matrices just as with vectors.
+# You must be careful with the syntax, though.
+# Let's start with a simple example:
+
+> x
+    x
+[1,] 1 2
+[2,] 2 3
+[3,] 3 4
+> x[x[,2] >= 3,]
+     x
+[1,] 2 3
+[2,] 3 4
+
+# Again, let's dissect this, just as we did when we first looked at filtering in Chapter 2:
+
+> j <- x[,2] >= 3
+> j
+[1] FALSE  TRUE  TRUE  
+
+# Here we look at the vector x[,2], which is the second column of x, 
+# and determine which of its elements are greater than or equal to 3.
+# The result, assigned to j, is a Boolean vector.
+# Now, use j in x:
+
+> x[j,]
+     x
+[1,] 2 3
+[2,] 3 4
+
+# Here we compute x[j,]– that is, the rows of x specified by the true elements of j– 
+# getting the rows corresponding to the elements in column 2 that were at least equal to 3.
+# Hence, the behavior shown earlier when this example was introduced:
+
+> x
+     x
+[1,] 1 2
+[2,] 2 3
+[3,] 3 4
+> x[x[,2] >= 3,]
+     x
+[1,] 2 3
+[2,] 3 4
+
+# For performance purposes, it's worth noting again that 
+# the computation of j here is a completely vectorized operation,
+# since all of the following are true:
+
+# - the object x[,2] is a vector.
+# - the operator >= compares two vectors.
+# - The number 3 was recycled to a vector of 3s.
+
+# Also note that even though j was defined in terms of x and then was used to extract from x,
+# it did not need to be that way.
+# the filtering criterion can be based on a variable separate from the one to which the filtering will be applied.
+# Here's an example with the same x as above:
+
+> x[z %% 2 == 1,]
+      [,1] [,2]
+[1,]     1    2
+[2,]     3    4
+
+# Here, the expression z %% 2 == 1 tests each element of z for being an odd number,
+# thus yielding (TRUE,FALSE,TRUE). As a result, we extracted the first and third rows of x.
+
+# here is another example:
+
+> m
+    [,1] [,2]
+[1,]   1    4
+[2,]   2    5
+[3,]   3    6
+> m[m,1] > 1 & m[,2] > 5,]
+[1] 3 6
+
+# we're using the same principle here, but with a slightly more complex set of conditions for row extraction.
+# (column extraction, or more generally, extraction of any submatrix, is similar.)
+# first, the expressioin m[,1] > 1 compares each element of the first column of m to 1 and retruns (FALSE,TRUE,TRUE).
+# the second expression, m[,2] > 5, similarly returns (FALSE,FALSE,TRUE). 
+# We then take the logical AND of (FALSE,TRUE,TRUE) and (FALSE,FALSE,TRUE), yielding (FALSE,FALSE,TRUE).
+# using the latter in the row indices of m,
+# we get the third row of m.
+
+# note that we needed to use &, the vector Boolean AND operator, 
+# rather than the scalar one that we would use in an if statement, &&.
+# a complete list of such operators is given in Section 7.2.
+
+# The alert reader may have noticed an anomaly in the preceding example.
+# Our filtering should have given us a submatrix of size 1 by 2,
+# but instead it gave us a two-element vector.
+# The elements were correct, but the data type was not. 
+# This would cause trouble if we were to then input it to some other matrix function.
+# The solution is to use the drop argument, which tells R to retain the two-dimensional nature of our data.
+# We'll discuss drop in detail in Section 3.6 when we examine unintended dimension reduction,
+# Since matrices are vectors, you can also apply vector operations to them.
+# Here's an example:
+
+> m
+    [,1] [,2]
+[1,]   5   -1
+[2,]   2   10
+[3,]   9   11
+> which(m > 2)
+[1] 1 3 5 6
+
+# R informed us here that, from a vector-indexing point of view, 
+# elements 1,3,5 and 6 of m are larger than 2.
+# for example, element 5 is the element in row 2, column 2 of m,
+# which we see has the value 10,
+# which is indeed greater than 2.
