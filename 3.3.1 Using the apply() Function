@@ -6,3 +6,52 @@
 # This is the general form of apply for matrices:
 
 apply(m,dimcode,f,fargs)
+
+# Where the arguments are as follows:
+
+# - m is the matrix.
+# - dimcode is the dimension, equal to 1 if the function applies to rows or 2 for columns,
+# - f is the function to be applied
+# - fargs is an optional set of arguments to be supplied to f.
+
+# for example, here we apply the R function mean() to each column of a matrix z:
+
+> z
+    [,1] [,2]
+[1,]   1    4
+[2,]   2    5
+[3,]   3    6
+> apply(z,2,mean)
+[1] 2 5
+
+# In this case, we could have used the colMeans() function, but this provides a simple example of using apply()
+# A function you write yourself is just as legitimate for use in apply() 
+# as any R built-in function such as mean().
+# Here's an example using our own function f:
+
+> z
+    [,1] [,2]
+[1,]   1    4
+[2,]   2    5
+[3,]   3    6
+> apply(z,2,mean)
+[1] 2 5
+
+# In this case, we could have used the colMeans() function, 
+# but this provides a simple example of using apply().
+# A function you write yourself is just as legitimate for use in apply() as any R built-in function such as mean().
+# Here's an example using our own function f:
+
+> z
+    [,1] [,2]
+[1,]   1    4
+[2,]   2    5
+[3,]   3    6
+> f <- function(x) x/c(2,8)
+> y <- apply(z,1,f)
+> y
+  [,1] [,2] [,3]
+[1,]  0.5 1.000 1.50
+[2,]  0.5 0.625 0.75
+
+# Our f() function divides a two-element vector by the vector (2,8).
