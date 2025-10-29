@@ -75,7 +75,7 @@
 
 # we're using the same principle here, but with a slightly more complex set of conditions for row extraction.
 # (column extraction, or more generally, extraction of any submatrix, is similar.)
-# first, the expressioin m[,1] > 1 compares each element of the first column of m to 1 and retruns (FALSE,TRUE,TRUE).
+# first, the expressioin m[,1] > 1 compares each element of the first column of m to 1 and returns (FALSE,TRUE,TRUE).
 # the second expression, m[,2] > 5, similarly returns (FALSE,FALSE,TRUE). 
 # We then take the logical AND of (FALSE,TRUE,TRUE) and (FALSE,FALSE,TRUE), yielding (FALSE,FALSE,TRUE).
 # using the latter in the row indices of m,
