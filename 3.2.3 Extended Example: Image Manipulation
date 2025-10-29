@@ -1,0 +1,87 @@
+# Image files are inherently matrices, since the pixels are arranged in rows and columns,
+# If we have a grayscale image, for each pixel, we store the intensity— the brightness– of the image at that pixel.
+# So the intensity of a pixel in, say, row 28 and column 88 of the image is stored in row 28, column 88 of the matrix.
+# For a color image, three matrices are stored, with intensities for red, green, and blue components, 
+# In our example, we'll use grayscale.
+# let's consider an image of Mount Rushmore National Memorial in the United States. 
+# Let's read it in, using the pixmap library.
+# (Appendix B describes how to download and install libraries.)
+
+> library(pixmap)
+> mtrush1 <- read.pnm("mtrush1.pgm")
+> mtrush1
+Pixmap image
+  Type          : pixmapGrey
+  Size          : 194x259
+  Resolution    : 1x1
+  Bounding box  : 0 0 259 194
+> plot(mtrush1)
+
+# We read in the file named mtrush1.pgm, returning an object of class pixmap.
+# We then plot it, as seen in Figure 3-1.
+
+# Now, let's see what this class consists of:
+
+> str(mtrush1)
+Formal class 'pixmapGrey' [package "pixmap"] with 6 slots
+  ..@ grey    : num [1:194, 1:259] 0.278 0.263 0.239 0.212 0.192 ...
+  ..@ channels: chr "grey"
+  ..@ size    : int [1:2] 194 259
+
+# The class here is of the S4 type, whose components are designated by @,
+# rather than $. S3 and S4 classes will be discussed in Chapter 9,
+# but the key item here is the intensity matrix, mtrush1@grey.
+# In the example, this matrix has 194 rows and 259 columns.
+# The intensities in this class are stored as numbers ranging from 0.0 (black) to 1.0 (white),
+# with intermediate values literally being shades of gray.
+# for instance, the pixel at row 28, column 88 is pretty bright.
+
+> mtrush@grey[28,88]
+[1] 0.7960784
+
+# To demonstrate matrix operations, let's blot out President Roosevelt.
+# (Sorry, Teddy, nothing personal.) To determine the relevant rows and columns, you can use R's locator() function.
+# When you call this function, it waits for the user to click a point within a graph 
+# and returns the exact coordinates of that point.
+# In this manner, I found that Roosevelt's portion of the picture 
+# is in rows 84 through 163 and columns 135 through 177.
+# note that row numbers in pixmap objects increase from the top of the picture to the bottom,
+# the opposite of the numbering used by locator(). 
+# so, to blot out that part of the image, we set all the pixels in that range to 1.0
+
+> mtrush2 <- mtrush1
+> mtrush2@grey[84:163,135:177] <- 1
+> plot(mtrush2)
+
+# The result is shown in Figure 3-2.
+
+# What if we merely wanted to disguise President Roosevelt's identity? 
+# We could do this by adding random noise to the picture.
+# Here's code to do that:
+
+# adds random noise to img, at the range rows,cols of img; img and the 
+# return value are both objects of class pixmap; the parameter q
+# controls the weight of the noise, with the result being 1-q times the 
+# original image plus q times the random noise
+blurpart <- function(img,rows,cols,q) {
+   lrows <- length(row)
+   lcols <- length(cols)
+   newimg <- img
+   randomnoise <- matrix(nrow=lrows,ncol-lcols,runif(lrows*lcols))
+   newimg@grey[rows,cols] <- (1-q) * img@grey[rows,cols] + q * randomnoise
+   return(newimg)
+}
+
+# As the comments indicate, we generate random noise and then take a weighted average of the target pixels and the noise.
+# The parameter q controls the weight of the noise, with larger q values producing more blurring,.
+# The random noise itself is a sample from U(0,1), the uniform distribution on the internal (0,1).
+# Note that the following is a matrix operation:
+
+newimg@grey[rows,cols] <- (1-q) * img@grey[rows,cols] + q * randomnoise
+
+# So let's give it a try:
+
+> mtrush3 <- blurpart(mtrush1,84:163,135:177,0.65)
+> plot(mtrush3)
+
+# The result is shown in fig 3-3.
