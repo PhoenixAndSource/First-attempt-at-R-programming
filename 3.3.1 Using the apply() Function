@@ -55,3 +55,69 @@ apply(m,dimcode,f,fargs)
 [2,]  0.5 0.625 0.75
 
 # Our f() function divides a two-element vector by the vector (2,8).
+# (Recycling would be used if x had a length longer than 2.)
+# The call to apply() asks R to call f() on each of the rows of z. 
+# The first such row is (1,4), so in the call to f(), the actual argument corresponding to the formal argument x is (1,4).
+# Thus, R computes the value of (1,4/(2,8), which in R's element-wise vector arithmetic is (0.5,0.5).
+# The computations for the other two rows are similar.
+
+# You may have been surprised that the size of the result here is 2 by 3 rather than 3 by 2.
+# That first computation, (0.5,0.5), ends up at the first column in the output of apply(), not the first row.
+# But this is the behavior of apply().
+# If the function to be applied returns a vector of k components,
+# Then the result of apply() will have k rows, 
+# You can use the matrix transpose function t() to change it if necessary, as follows:
+
+> t(apply(z,1,f))
+      [,1]  [,2]
+[1,]   0.5 0.500
+[2,]   1.0 0.625
+[3,]   1.5 0.750
+
+# If the function returns a scalar (which we know is just a one-element vector), 
+# the final result will be a vector, not a matrix.
+
+# If the function returns a scalar (which we know is just a one-element vector),
+# the final result will be a vector, not a matrix.
+
+# As you can see, the function to be applied needs to take at least one argument.
+# The formal argument here will correspond to an actual argument of one row or column in the matrix,
+# As described previously. In some cases, you will need additional arguments for this function,
+# which you can place following the function name in your call to apply().
+
+# for instance, suppose we have a matrix of 1s and 0s and want to create a vector as follows:
+# for each row of the matrix, the corresponding element of tthe vector will be either 1 or 0,
+# depending on whether the majority of the first d elements in that row is 1 or 0.
+# Here, d will be a parameter that we may wish to vary. We could do this:
+
+> copymaj
+function(rw,d) {
+    maj <- sum(rw[1:d]) / d
+    return(if(maj > 0.5) 1 else 0)
+}
+> x
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    0    1    1    0
+[2,]    1    1    1    1    0
+[3,]    1    0    0    1    1
+[4,]    0    1    1    1    0
+> apply(x,1,copymaj,3)
+[1] 1 1 0 1
+> apply(x,1,copymaj,2)
+[1] 0 1 0 0
+
+# Here, the values 3 and 2 form the actual arguments for the formal argument d in copymaj().
+# Let's look at what happened in the case of row 1 of x.
+# That row consisted of (1,0,1,1,0), the first d elements of which were (1,0,1)
+# A majority of those three elements were 1s, so copymaj() returned a 1,
+# and thus the first element of the output of apply() was a 1.
+
+# Contrary to common opinion, using apply() will generally not speed up your code.
+# The benefits are that it makes for very compact code,
+# Which may be easier to read and modify,
+# and you avoid possible bugs in writing code for looping.
+# Moreoever, as R moves closer and closer to parallel processing, 
+# functions like apply() will become more and more important.
+# For example, the clusterApply() function in the snow package gives R some parallel-processing capability 
+# by distributing the submatrix data to various network nodes,
+# with each node basically applying the given function on its submatrix.
