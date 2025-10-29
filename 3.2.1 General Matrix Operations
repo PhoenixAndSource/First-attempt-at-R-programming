@@ -1,0 +1,22 @@
+# Now that we've covered the basics of creating a matrix, we'll look at some common operations performed with matrices.
+# These include performing linear algebra operations, matrix indexing and matrix filtering.
+
+# 3.2.1 Performing Linear Algebra Operations on Matrices
+# You can perform various linear algebra operations on matrices, 
+# such as a matrix multiplication, matrix scalar multiplication, and matrix addition.
+# using y from the preceding example, here is how to perform those three operations:
+
+> y %*% y # mathematical matrix multiplication
+  [,1] [,2]
+[1,] 7   15
+[2,] 10  22
+> 3*y # mathematical multiplication of matrix by scalar
+  [,1] [,2]
+[1,] 3    9
+[2,] 6   12
+>  y+y # mathematical matrix addition
+  [,1] [,2]
+[1,] 2    6
+[2,] 4    8
+
+# For more on linear algebra operations on matrices, see Section 8.4.
