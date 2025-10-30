@@ -3,7 +3,83 @@
 # such as weight and blood pressure.
 # The matrix is then a two-dimensional data structure.
 # But supppose we also have data taken at different times, one data point per person per variable per time.
-# Time then becomes the third dimension, in addirtiion to rows and columns.
+# Time then becomes the third dimension, in addition to rows and columns.
 # In R, such data sets are called arrays.
+
 # As a simple example, consider students and test scores.
-# say each test consists of two parts, so we record two scores for a student for
+# say each test consists of two parts, so we record two scores for a student for each test.
+# now suppose that we have two tests,
+# and to keep the example small,
+# Assume we have only three students.
+# Here's the data for the first test:
+
+> firsttest
+    [,1] [,2]
+[1,]  46   30
+[2,]  21   25
+[3,]  50   50
+
+# Student 1 had scores of 46 and 30 on the first test,
+# student scored 21 and 25, and so on. Here are the scores for the same students on the second test:
+
+> secondtest
+    [,1] [,2]
+[1,]  46   43
+[2,]  41   35
+[3,]  50   50
+
+# Now, let's put both tests into one data structure,
+# which we'll name tests.
+# We'll arrange it to have two "layers"—— 
+# One layer per test––
+# with three rows and two columns within each layer.
+# we'll store firsttest in the first layer and secondtest in the second.
+
+# In layer 1, there will be three rows for the three students' scores on the first test,
+# With two columns per row for the two portions of a test.
+# We use R's array function to create the data structure:
+
+> test <- array(data=c(firsttest,secondtest),dim=c(3,2,2))
+
+# In the argument dim=c(3,2,2), we are specifying two layers (this is the second 2),
+# each consisting of three rows and two columns. This then becomes an attribute of the data structure:
+
+> attributes(tests)
+$dim
+[1] 3 2 2
+
+# Each element of tests now has three subscripts,
+# rather than two as in the matrix case.
+# The first subscript correspongs to the first element in the $dim vector,
+# The second subscript corresponds to the second element in the vector, and so on.
+# For instancem=, the score on the second portion of test 1 for student 2 is retrieved as follows:
+
+> tests[3,2,1]
+[1] 48
+
+R's print function for arrays displays the data layer by layer:
+
+> tests
+, , 1
+
+    [,1] [,2]
+[1,]  46   30
+[2,]  21   25
+[3,]  50   48
+
+, , 2
+
+    [,1] [,2]
+[1,]  46   43
+[2,]  41   35
+[3,]  50   49
+
+# Just as we built out three-dimensional array by combining two matrices,
+# We can build four-dimensional arrays by combining two or more three dimensional arrays, and so on.
+
+# One of the most common uses of arrays is in calculating tables.
+
+# See section 6.3 for an example of a three-dimensional table.
+
+
+
