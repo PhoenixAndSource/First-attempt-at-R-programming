@@ -1,0 +1,9 @@
+# In a statistical context, a typical matrix in R has rows corresponding to observations, 
+# say on various people, and column corresponding to variables,
+# such as weight and blood pressure.
+# The matrix is then a two-dimensional data structure.
+# But supppose we also have data taken at different times, one data point per person per variable per time.
+# Time then becomes the third dimension, in addirtiion to rows and columns.
+# In R, such data sets are called arrays.
+# As a simple example, consider students and test scores.
+# say each test consists of two parts, so we record two scores for a student for
