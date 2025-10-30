@@ -1,0 +1,25 @@
+# The natural way to refer to rows and columns in a matrix is via the row and column numbers.
+# However, you can also give names to these entities.
+# Here's an example:
+
+> z
+    [,1] [,2]
+[1,] 1 3
+[2,] 2 4
+> colnames(z)
+NULL
+> colnames(z) <- c("a","b")
+> z
+     a b
+[1,] 1 3
+[2,] 2 4
+> colnames(z)
+[1] "a" "b"
+> z[,"a"]
+[1] 1 2
+
+# As you see here, these names can then be used to reference specific columns.
+# The function rownames() works similarly.
+
+# Naming rows and columns is usually less important when writing R code for general applications, 
+# but it can be useful when analyzing a specific data set
