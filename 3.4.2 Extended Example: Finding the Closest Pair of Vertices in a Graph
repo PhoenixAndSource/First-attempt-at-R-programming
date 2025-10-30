@@ -60,3 +60,82 @@ imin <- function(x) {
 # Since the matrix could be large — a thousand cities would mean a million entries in the matrix 
 # —— We should exploit that symmetry and save work.
 
+# That, however, presents a problem. In order to go through the basic computation.
+# The function called by apply() 
+# needs to know the number of the row in the original matrix —— 
+# knowledge that apply() does not provide to the function.
+# So in line 6, we augment the matrix with an extra column, consisting of the row numbers,
+# so that the function called by apply() can take row numbers into account.
+# The function called by apply() is imin(), beginning in line 15, 
+# which finds the minimum in the row specified in the formal argument x.
+# It returns not only the minumum in the given row but also the index at which the minimum occurs.
+# When iin() is called on row1 of our example matriz q above,
+# The minimum value is 8, which occurs in index 4. 
+# For this latter purpose, the R function which.min(), used in line 18 is very handy,
+
+# Line 19 is noteworthy. Recall that due to the symmetry of the matrix,
+# We skip the early part of each row, as is seen in the expression (i+1):(1x-1)
+# in line 18. But that means that the call to which,min() 
+# in that line will return the minimum's index relative to the range (i+1:)(1x-1).
+# In row 3 of our example matrix, q we would get an index of 1 instead of 4.
+# Thus, we must adjust by adding i, which we do in line 19.
+
+# Finally, making proper use of the output of apply() here is a bit tricky.
+# Thank again of the example matrix q above.
+# The call to apply() will return the matrtix wmins:
+
+          ( 4  3   4  5
+            8  15  6 33 )
+
+# As noted in the comments, the second row of that matrix contains the upper-diagonal minima
+# from the various rows of d, while the first row contains the indices of those values.
+# For instance, the first column of womins gives the information for the first row of q,
+# reporting that the smallest value in that row is 8,
+# occuring at index 4 of the row.
+
+# Thus line 9 will pick up the number i of the row 
+# containing the smallest value in the entire matrix, 
+# 6 in our q example.
+# line 10 will give us the position j in that row where the minimum occurs,
+# 4 in the case of q.
+# In other words, the overall minimum is in row i and column j,
+# information that we then use in line 11.
+
+# Meanwhile, row 1 of apply()'s output shows the indices within those rows 
+# at which the row minima occur. That's great, because we can now find which 
+# other city was in the best pair. We know that city 3 is one of them,
+# so we go to entry 3 in row 1 of the output, finding 4.
+# So, the pair of cities closest to each other is city 3 and city 4.
+# Lines 9 and 10 then generalize this reasoning.
+# If the minimal element in our matrix is unique, there is an alternate approach that is far simpler:
+
+minda <- function(d) {
+    smallest <- min(d)
+    ij <- which(d == smallest,arr.ind=TRUE)
+    return(c(smallest,ij))
+}
+
+# This works, but it does have some possible drawbacks.
+# Here's the key line in the new code:
+
+ij <- which(d == smallest,arr,ind=TRUE)
+
+# It determines the index of the element of d that achieves the minimum.
+# The argument arr.ind=TRUE specifies that the returned index will be a matrix index——
+# that is, a row, and column, rather than a single vector subscript.
+# Without this argument, d would be treated as a vector.
+
+# As noted, this new code works only if the minimum is unique.
+# If that is not the case, which() will return multiple row/column number pairs,
+# contrary to our basic goal.
+# and if we used tthe original code and d had multiple minimal elements, just one of them would be returned.
+
+# Another problem is performance. 
+# This new code is essentially making two (behind-the-scenes) loops through our matrix:
+# one to compute smallest and the other in the call to which(). 
+# This will likely be slower than our original code.
+
+# Of those two approaches, you might choose the original code 
+# if executing speed is an issue or if there may be multiple minima,
+# but otherwise opt for the alternate code; 
+# the simplicity of the latter will make the code easier the read and maintain
