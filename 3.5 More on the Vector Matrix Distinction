@@ -1,0 +1,45 @@
+# At the beginning of the chapter, I said that a matrix is just a vector but with two additional attributes:
+# The number of rows and the number of columns.
+# Here, we'll take a closer look at the vector nature of matrices.
+# Consider this example:
+
+> z <- matrix(1:8,nrow=4)
+> z
+    [,1] [,2]
+[1,]   1    5
+[2,]   2    6
+[3,]   3    7
+[4,]   4    8
+
+# As z is still a vector, we can query its length:
+
+> length(z)
+[1] 8
+
+# But as a matrix, z is a bit more than a vector:
+
+> class(z)
+[1] "matrix"
+> attributes(z)
+$dim
+[1] 4 2
+
+# The number of rows and columns are obtainable individually via the nrow() and ncol() functions:
+
+> nrow(z)
+[1] 4
+> nrcol(z)
+[1] 2
+
+# These just piggyback on dim(), as you can see by inspecting the code.
+# Recall once again that objects can be printed in interactive mode by simply typing their names:
+
+> nrow
+function (x)
+dim(x)[1]
+
+# These functions are useful when you are writing a general-purpose library function whose argument is a matrix.
+# By being able to determine the number of rows and columns in your code,
+# You alleviate the caller of the burden of supplying that information as two additional arguments.
+# This is one of the benefits of object-oriented programming.
+
