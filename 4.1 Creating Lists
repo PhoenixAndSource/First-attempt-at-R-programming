@@ -1,0 +1,71 @@
+# In contrast to a vector, in which all elements must be of the same mode,
+# R's list structure can combine object of different types.
+# for those familiar with Python, an R list is similar to a Python dictionary or,
+# For that matter, a Perl hash,
+# C programmers may find it similar to a C struct.
+# The list plays a central role in R, 
+# forming the basis for data frames, object-oriented programming, and so on.
+
+# In this chapter, we'll cover how to create lists and how to work with them.
+# As with vectors and matrices, one common operation with lists is indexing.
+# List indexing is similar to vector and matrix indexing but with some major differences.
+# And like matrices, lists have an analog for the apply() function.
+# We'll discuss these and other list topics,
+# including ways to take lists apart, which often comes in handy.
+
+# creating lists
+# Technically, a list is a vector.
+# Ordinary vector –– those of the type we've been using so far ––
+# are termed atomic vectors, since their components cannot be broken down into smaller components.
+# In contrast, lists are referred to as recursive vectors.
+
+# For our first look at lists, let's consider an employee database. 
+# For each employee, we wish to store the name, salary, and a Boolean indicating union membership.
+# Since we have three different modes here–– character, numeric and logical—
+# it's a perfect place for using lists.
+# Our entire database might then be a list of lists,
+# or some other kind of list such as a data frame,
+# though we won't pursue that here.
+# We could create a list to represent our employee, Joe, this way:
+
+j <- list(name="Joe", salary=55000, union=T)
+
+We could print out j, either in full or by component:
+
+> j
+$name
+[1] 'Joe'
+
+$salary
+[1] 55000
+
+$union
+[1] TRUE
+
+# Actually, the component names––called tags in the R literature–– such as salary are optional.
+# We could alternatively do this:
+
+> jalt <- list("Joe", 55000, T)
+> jalt
+[[1]]
+[1] "Joe"
+
+[[2]]
+[1] 55000
+
+[[3]]
+[1] TRUE
+
+# However, it is generally considered clearer and less rror-prone to use names instead of numeric indices.
+# Names of list components can be abbreviated to whatever extent is possible without causing ambiguity:
+
+> j$sal
+[1] 55000
+
+# Since lists are vectors, they can be created via vector():
+
+> z <- vector(mode="list")
+> z[["abc"]] <- 3
+> z
+$abc
+[1] 3
