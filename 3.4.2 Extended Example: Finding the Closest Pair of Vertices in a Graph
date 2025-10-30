@@ -1,0 +1,62 @@
+# Finding the distances between vertices on a graph is a common example
+# used in computer science courses, and is used in statistics/data sciences too.
+# This kind of problem arises in some clustering algorithms, for instance, and in genomics applications.
+# Here, we'll look at the common example of finding distances between cities,
+# As it is easier to describe than, say, finding distances between DNA strands.
+# Suppose we need a function that inputs a distance matrix,
+# where the element in row i, column j gives the distance between city i and city j and
+# outputs the minimum one-hop distance between cities and the pair of cities that achieves that minimum.
+# Here's the code for the solution:
+
+# returns the minimum value of d[i,j], i !=j, and the row/col attaining
+# that minimum, for square symmetric matrix d; no special policy on ties
+mind <- function(d) {
+  n <- nrow(d)
+  # add a column to identify row number for apply()
+  dd <- cbind(d,1:n)
+  wmins <- apply(dd[-n,],1,imin)
+  # wmins will be 2xn, 1st row being indices and 2nd being values
+  i <- which.min(wmins[2,])
+  j <- wmins[1,j]
+  return(c(d[i,j],i,j))
+}
+
+# finds the location, value of the minimum in a row x
+imin <- function(x) {
+  1x <- length(x)
+  i <- x[1x] # original row number
+  j <- which.min(x[(i+1]:(1x-1))
+  k <- i+j
+  return(c(k,x[k]))
+}
+
+# Here's an example of putting our new function to use:
+
+> q
+    [,1] [,2] [,3] [,4] [,5]
+[1,]   0   12   13    8   20
+[2,]  12    0   15   28   88
+[3,]  13   15    0    6    9
+[4,]   8   28    6    0   33
+[5,]  20   88    9   33    0
+> mind(q)
+[1] 6 3 4
+
+# The minimum value was 6, located in row 3, column 4.
+# As you can see, a call to apply() plays a prominent role.
+# Our task is fairly simple:
+# We need to find the minimum nonzero element in the matrix.
+# We find the minimum in each row– 
+# a single call to apply() accomplishes this for all the rows—
+# and then find the smallest value among those minima.
+# But as you'll see, the code logic becomes rather intricate.
+
+# One key point is that the matrix is symmetric,
+# because the distance from city i to city j is the same as from j to i.
+# So in finding the minimym value in the ith row, we need look at only elements i+1, i+2,..., n,
+# where n is the number of rows, and columns in the matrix,
+# Note too that this means we can skip the last row of d in our call to apply() in line 7.
+
+# Since the matrix could be large — a thousand cities would mean a million entries in the matrix 
+# —— We should exploit that symmetry and save work.
+
