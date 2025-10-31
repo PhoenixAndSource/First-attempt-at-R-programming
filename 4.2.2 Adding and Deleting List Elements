@@ -1,0 +1,90 @@
+# The operations of adding and deleting list elements arise in a surprising number of contexts.
+# This is especially true for data structures in which lists from the foundation,
+# such as data frames and R classes.
+# New components can be added after a list is created.
+
+> z <- list(a="abc",b=12)
+> z
+$a
+[1] "abc"
+$b
+[1] 12
+
+> z$c <- "sailing" # add a c component
+> # did c really get added?
+> z
+$a
+[1] "abc"
+
+$b
+[1] 12
+
+$c
+[1] "sailing"
+
+# adding components can also be done via a vector index:
+
+> z[[4]] <- 28
+> z[5:7] <- c(FALSE,TRUE,TRUE)
+> z
+$a
+[1] "abc"
+
+$b
+[1] 12
+
+$c
+[1] "sailing"
+
+[[4]]
+[1] 28
+
+[[5]]
+[1] FALSE
+
+[[6]]
+[1] TRUE
+
+[[7]]
+[1] TRUE
+
+# You can delete a list component by setting it to NULL.
+
+> z$b <-NULL
+> z
+$a
+[1] "abc"
+
+$c
+[1] "sailing"
+
+[[3]]
+[1] 28
+
+[[4]]
+[1] FALSE
+
+[[5]]
+[1] TRUE
+
+[[6]]
+[1] TRUE
+
+# Note that upon deleting z$b,
+# The indices of the elements after it moved up by 1.
+# For instance, the former z[[4]] became z[[3]].
+
+# You can also concatenate lists.
+
+> c(list("Joe", 55000, T),list(5))
+[[1]]
+[1] "Joe"
+
+[[2]]
+[1] 55000
+
+[[3]]
+[1] TRUE
+
+[[4]]
+[1] 5
