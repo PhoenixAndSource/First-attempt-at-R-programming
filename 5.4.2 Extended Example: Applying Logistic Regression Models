@@ -1,0 +1,57 @@
+# Let's run a logistic regression model on the abalone data we used in Section 2.9.2, 
+# predicting gender from the other eight variables: height, weight, rings, and so on, one at a time.
+
+# The logistic model is used to predict a 0- or 1-valued random variable Y from one or more explanatory variables.
+# The function value is the probability that Y=1, given the explanatory variables.
+# Let's say we have just one of the latter, X. Then the model is as follows:
+
+# Pr(Y = 1|X = t) = 1 / (1 + exp[-(β₀+β₁t)])
+
+# As with linear regression models, the βᵢ values are estimated from the data, 
+# using the function glm() with the argument family=binomial.
+# We can use sapply() to fit eight single-predictor models–– 
+# one for each of the eight variables other than gender in this data set
+# ––all in just one line of code:
+
+aba <- read.csv("abalone.data",header=T)
+abamf <- aba[aba$Gender != "I",] # exclude infants from the analysis
+lftn <- function(clmn) {
+  glm(abamf$Gender ~ clmn, family=binomial)$coef
+}
+loall <- sapply(abamf[,-1],1ftn)
+
+# In lines 1 and 2, we read in the data frame and then exclude the observations for infants.
+# In line 6, we call sapply() on the subdata frame in which column 1, named Gender, has been excluded.
+# In other words, this is an eight-column subframe consisting of our eight explanatory variables.
+# Thus lftn() is called on each column of that subframe.
+
+# Taking as input a column from the subframe, accessed via the formal argument clmn,
+# line 4 fits a logistic model that predicts gender from that column and hence from that explanatory variable.
+# Recall from Section 1.5 that the ordinary regression function lm() 
+# returns a class "lm" object containing many components,
+# one of which is $coefficients, the vector of estimated βᵢ.
+# This component is also in the return value of glm().
+# Also recall that list component names can be abbreviated if there is no ambiguity.
+# Here, we've shortened coefficients to coef.
+# In the end, line 6 returns eight pairs of estimated βᵢ. Let's check it out.
+
+> loall
+               Length     Diameter    Height    WholeWt     ShuckedWt      ViscWt
+(Intercept)  1.275832     1.289130  1.027872    0.4300827   0.2855054   0.4829153
+clmn        -1.962613    -2.533227 -5.643495   -0.2688070  -0.2941351  -1.4647507
+              Shellwt        Rings
+(Intercept) 0.5103942  n0.64823569
+col        -1.2135496  -0.04509376
+
+# Sure enough, we get a 2-by-8 matrix, with the jth column given the pair
+# of estimated βᵢ values obtained when we do a logistic regression using the jth explanatory variable.
+# We could actually get the same result using the ordinary matrix/data frame apply() function,
+# but we find that the method is a bit slower. The discrepancy may be due to the matrix allocation time.
+# Note the class of the return value of glm():
+
+> class(loall)
+[1] "glm" "lm"
+
+# This says that loall actually had two classes: "glm" and "lm".
+# This is because the "glm" class is a subclass of "lm". 
+# more on classes in detail in Chapter 9.
