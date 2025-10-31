@@ -1,0 +1,75 @@
+# 6 Factors and Tables
+
+# Factors form the basis for many of R's powerful operations,
+# including many of those performed on tabular data.
+# The motivation for factors comes from the notion of nominal, or categorical, variables in statistics.
+
+# These values are nonnumerical in nature, 
+# corresponding to categories such as Democrat, Republican, and Unaffiliated,
+# Although they may be coded using numbers.
+
+# In this chapter, we'll begin by looking at the extra information contained in factors
+# and then focus on the functions used with factors.
+
+# we'll also explore tables and common table operations.
+
+# 6.1 Factors and Levels
+
+# An R factor might be viewed simply as a vector with a bit more information added
+# (though, as seen below, it's different from this internally).
+# That extra information consists of a record of the distinct values in that vector,
+# called levels. Here's an example:
+
+> x <- c(5,12,13,12)
+> xf <- factor(x)
+> xf
+[1]  5 12 13 12
+Levels: 5 12 13
+
+# The distinct values in xf––5, 12, and 13––are the levels here.
+
+# Let's take a look inside:
+
+> str(xf)
+  Factor x/ 3 levels "5","12","13": 1 2 3 2
+> unclass(xf)
+[1] 1 2 3 2
+attr(,"levels")
+[1] "5" "12" "13"
+
+# This is revealing. The core of xf here is not (5,12,13,12) but rather (1,2,3,2).
+# The latter means that our data consists first of a level-1 value,
+# then level-2 and level-3 values, and finally another level-2 value.
+# So the data has been recoded by level.
+# The levels themselves are recorded too,
+# of course, though as characters such as "5" rather than 5.
+
+# The length of a factor is still defined in terms of the length of the data 
+# rather than say, being a count of the number of levels:
+
+> length(xf)
+[1] 4
+
+# We can anticipate future new levels, as seen here:
+
+> x <- c(5,12,13,12)
+> xff <- factor(x,levels=c(5,12,13,88))
+> xff
+[1] 5 12 13 12
+Levels: 5 12 13 88
+> xff[2] <- 88
+> xff
+[1] 5 88 13 12
+Levels: 5 12 13 88
+
+# Originally, xff did not contain the value 88, but in defining it,
+# We allowed for that future possibility.
+# Later, we did indeed add the value.
+# but by that same token, you cannot sneak in an "illegal" level.
+# Here's what happens when you try:
+
+> xff[2] <- 28
+Warning message:
+In '[<-.factor'('*tmp*', 2, value = 28) :
+  invalid factor level, NAs generated
+
