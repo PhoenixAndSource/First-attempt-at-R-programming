@@ -1,0 +1,123 @@
+# To begin exploring R tables, consider this example:
+
+> u <- c(22,8,33,6,8,29,-2)
+> fl <- list(c(5,12,13,12,13,5,13),c("a","bc","a","a","bc","a","a"))
+> tapply(u,fl,length)
+    a bc
+5   2 NA
+12  1  1
+13  2  1
+
+# Here, tapply() again temporarily breaks u into subvectors,
+# As you saw earlier, and then applies the length() function to each subvector.
+# (Note that this is independent of what's in u.
+# Our focus now is purely on the factors.)
+# Those subvector lengths are the counts of the occurences 
+# of each of the 3 x 2 = 6 combinations of the two factors.
+# For instance, 5 occurred twice with "a" and not at all with "bc";
+# hence the entries 2 and NA in the first row of the output.
+# In statistics, this is called a contingency table.
+
+# There is one problem in this example: the NA value.
+# It really should be 0, 
+# meaning that in no cases did the first factor have level 5 and the second have level "bc".
+# The table() function creates contingency tables correctly.
+
+> table(fl)
+    fl.2
+fl.1  a  bc
+  5   2  0
+  12  1  1
+  13  2  1
+
+# The first argument in a call to table() is either a factor or a list of factors.
+# The two factors here were (5,12,13,12,13,5,13) and ("a","bc","a","a","bc","a","a").
+# In this case, an object that is interpretable as a factor is counted as one.
+
+# typically a data frame serves as the table() data argument.
+# suppose the file ct.dat consists of election-polling data,
+# in which candidate X is running for reelection.
+# The ct.dat file looks like this:
+
+"Vote for X" "Voted for X Last Time"
+"Yes" "Yes"
+"Yes" "No"
+"No"  "No"
+"Not sure" "Yes"
+"No" "No"
+
+# In the usual statistical fashion, each row in this file represents one subject under study.
+# In this case, we have asked five people the following two questions:
+
+# Do you plan to vote for candidate X?
+# Do you plan to vote for X in the last election?
+
+# This gives us five rows in the data file.
+# Let's read in the file:
+
+> ct <- read.table("ct.dat",header=T)
+> ct
+
+  Vote.for.X Voted.for.X.Last.Time
+1        Yes                   Yes
+2        Yes                    No
+3         No                    No
+4   Not Sure                   Yes
+5         No                    No
+
+# We can use the table() function to compute the contingency table for this data:
+
+> cttab <- table(ct)
+> cttab
+          Voted.for.X.Last.Time
+Vote.for.X  No  Yes
+  No         2    0
+  Not Sure   0    1
+  Yes        1    1
+
+# The 2 in the upper-left corner of the table shows that we had,
+# For example, two people who said "no" to the first and second questions.
+# The 1 in the middle-right indicates that one person answered "not sure"
+# to the first question and "yes" to the second question.
+
+# We can also get one-dimensional counts, which are counts on a single factor, as follows:
+
+> table(c(5,12,13,12,8,5))
+
+5 8 12 13
+2 1  2  1
+
+# Here's an example of a three-dimensional table, 
+# involving voters' genders, race (white, black, Asian, and other),
+# and political views (liberal or conservative):
+
+> v # the data frame
+  gender race pol
+1 M W L
+2 M W L
+3 F A C
+4 M O L
+5 F B L
+6 F B C
+> vt <- table(v)
+> vt
+, , pol = C
+
+      race
+gender A B O W
+    F  1 1 0 0
+    M  0 0 0 0
+
+, , pol = L
+
+      race
+gender A B O W
+     F 0 1 0 0
+     M 0 0 1 2
+
+# R prints out a three-dimensioinal table as a series of two-dimensional tables.
+# In this case, it generates a table of gender and race for conservatives 
+# and then a corresponding table for liberals. 
+# For example, the second two-dimensional table says that there were two white male liberals.
+
+
