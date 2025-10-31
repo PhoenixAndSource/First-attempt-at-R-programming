@@ -1,0 +1,4 @@
+# Since a list is a vector, you can obtain the number of components in a list via length().
+
+> length(j)
+[1] 3
