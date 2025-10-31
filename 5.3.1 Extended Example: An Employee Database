@@ -1,0 +1,50 @@
+# The following is an adaptation of a consulting project.
+# At issue was whether older workers were faring as well as younger ones.
+# There was data on several variable, such as age and performance ratings,
+# which is used in the comparison of the older and younger employees.
+# There is also employee ID numbers, which were crucial in being able to connect the two data files: DA and DB.
+# the DA file had this header:
+
+"EmpID", "Perf 1", "Perf 2", "Perf 3", "Job Title"
+
+# These are names for the employee ID, Three performance ratings and the job title.
+# DB had no header. The variables again began with the ID, followed by start and end dates of employment.
+# Both files were in CSV format. 
+# Part of the data-cleaning phase consisted of checking that each record contained the proper number of fields.
+# DA, for example, should have five fields per record. Here is the check:
+
+> count.fields("DA",sep=",")
+  [1] 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+5 5 5 5
+...
+
+# Here, I specified that the file DA had fields separated by commas. 
+# The function then reported the number of fields in each record of the file, 
+# which fortunately were all 5s.
+# I could have used all() to check this, rather than checking it visually via this call:
+
+all(count.fields("DA",sep=",") >=5)
+
+# A return value of TRUE would mean everthing is fine. Alternatively, I could have used this form:
+
+table(count.fields("DA",sept=","))
+
+# we would then get counts of the numbers of records with five fields, four fields, six fields, and so on.
+# After this check, we then read in the files as data frames:
+
+da <- read.csv("DA",header=TRUE,stringsAsFactors=FALSE)
+db <- read.csv("DB",header=FALSE,stringsAsFactors=FALSE)
+
+# I wanted to check for possible spelling errors in the various fields,
+# so I ran the following code:
+
+for (col in 1:6)
+  print(unique(sort(da[,col])))
+
+# this gives us a list of the distinct values in each column so that we can visually scan for incorrect spellings.
+# I needed to merge the two data frames, matching by employee ID, so I ran the following code:
+
+mrg <- merge(da,db,by.x=1,by,y=1)
+
+# we specified that the first column would be the merge variable in both cases. 
+# (Like mentioned earlier, we could also have used field names rather than numbers here.)
