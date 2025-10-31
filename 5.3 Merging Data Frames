@@ -1,0 +1,78 @@
+# In the relational database world,
+# One of the most important operations is that of a join,
+# In which two tables can be combined according to the values of a common variable.
+# In R, two data frames can be similarly combined using the merge() function.
+
+# The simplest form is as follows:
+
+merge(x,y)
+
+# This merges data frames x and y.
+# It assumes that the two data frames have one or more columns with names in common.
+# Here's an example:
+
+> d1
+      kids  states
+1     Jack      CA
+2     Jill      MA
+3  Jillian      MA
+4     John      HI
+> d2
+      ages    kids
+1       10    Jill
+2        7 Lillian
+3       12    Jack
+> d <- merge(d1,d2)
+> d
+  kids  states   ages
+1 Jack      CA    12
+2 Jill      MA    10
+
+# Here, the two data frames have the variable kids in common.
+# R found the rows in which this variable had the same value of kids in both data frames
+# (the ones for Jack and Jill). 
+# It then created a data frame with corresponding rows and with columns 
+# taken from data frames (kids, states, and ages).
+
+# The merge() function has named arguments by.x and by.y, which handle cases
+# in which variables have similar information but different names 
+# in the two data frames. Here's an example:
+
+> d3
+    ages     pals
+1     12     Jack
+2     10     Jill
+3      7  Lillian
+> merge(d1,d3,by.x="kids",by.y="pals")
+  kids states  ages
+1 Jack     CA    12
+2 Jill     MA    10
+
+# Even though our variable was called kids in one data frame and pals in the other, 
+# it was meant to store the same information, and thus the merge made sense.
+
+# duplicate matches will appear in full in the result, possibly in undesirable ways.
+
+> d1
+    kids  states
+1   Jack      CA
+2   Jill      MA
+3 Jillian     MA
+4   John      HI
+> d2a <- rbind(d2,list(15,"Jill"))
+> d2a
+  ages    kids
+1   12    Jack
+2   10    Jill
+3    7 Lillian
+4   15    Jill
+> merge(d1,d2a)
+  kids states ages
+1 Jack     CA   12
+2 Jill     MA   10
+3 Jill     MA   15
+
+# There are two Jills in d2a. There is a Jill in d1 who lives in Massachusetts and another Jill with unknown residence.
+# In our previous example, merge(d1,d2), there was only one Jill, who was presumed to be the same person in both data frames.
+# But here, in the call merge(d1,d2a), it may have been the case that only one of the Jills was a Massachusetts resident.
+# It is clear from this little example that you must choose matching variables with great care.
