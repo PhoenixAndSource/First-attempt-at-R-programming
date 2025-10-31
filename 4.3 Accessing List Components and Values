@@ -1,0 +1,68 @@
+# If the components in a list do have tags, as is the case with 
+# name, salary, and union for j in Section 4.1, you can obtain them via names():
+
+> names(j)
+[1] "name"  "salary"  "union"
+
+# To obtain the values, use unlist():
+
+> ulj <- unlist(j)
+> ulj
+    name   salary  union
+    "Joe" "55000" "TRUE"
+> class(ulj)
+[1] "character"
+
+# The return value of unlist() is a vector––in this case, a vector of character strings.
+# Note that the element names in this vector come from the components in the original list.
+# On the other hand, if we were to start with numbers, we would get numbers.
+
+> z <- list(a=5,b=12,c=13)
+> y <- unlist(z)
+> class(y)
+[1] "numeric"
+> y
+a b  c
+5 12 13
+
+# So the output of unlist() in this case was a numeric vector.
+# What about a mixed case?
+
+> w <- list(a=5,b="xyz")
+> wu <- unlist(w)
+> class(wu)
+[1] "character"
+> wu
+    a     b
+  "5" "xyz"
+
+# Here, R chose the least common denominator: character strings.
+# This sounds like some kind of precedence structure, and it is.
+# As R's help for unlist() states:
+
+# where possible the list components 
+# are coerced to a common mode during the unlisting, 
+# and so the result often ends up as a character vector.
+# Vectors will be coerced to the highest type of the components in the hierarchy 
+# NULL < raw < logical < integer < real < complex < character < list < expression:
+# pairlists are treated as lists.
+
+# But there is something else to deal with here.
+# Though wu is a vector and not a list,
+# R did give each of the elements a name.
+# We can remove them by setting their names to NULL, as you saw in Section 2.11.
+
+> names(wu) <- NULL
+> wu
+[1] "5"  "xyz"
+
+# We can also remove the elements' names directly with unname(), as follows:
+
+> wun <- unname(wu)
+> wun
+[1] "5"  "xyz"
+
+# This also has the advantage of not destroying the names in wu, 
+# in case they are needed later.
+# If they will not be needed later,
+# we could simply assign back to wu instead of to wun in the preceding statement.
