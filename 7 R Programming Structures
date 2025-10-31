@@ -1,0 +1,13 @@
+# R is a block-structured language in the manner of the ALGOL-descendent family,
+# such as C, C++, Python, Perl, and so on.
+# As you've seen, blocks are delineated by braces, 
+# though braces are optional if the block consists of just a single statement.
+# Statements are separated by newline characters or, optionally, by semicolons.
+
+# Here, we cover the basic structures of R as a programming language.
+# We'll review some more details on loops and the like 
+# and then head straight into the topic of functions
+# In particular, issues of variable scope will play a major role.
+# As with many scripting languages, you do not "declare" variables in R.
+# Programmers who have a background in, say the C language, 
+# will find similarities in R at first but then will see that R has a richer scoping structure.
