@@ -1,0 +1,51 @@
+# Suppose the second exam score for the first student had been missing.
+# Then we would have typedthe following into that line when we were preparing the data file:
+
+2.0 NA 4.0
+
+# In any subsequent statistical analyses, R would do its best to cope with the missing data.
+# However, in some situations, we need to set the option na.rm=TRUE, explicitly telling R to ignore NA values.
+# For instance, with the missing exam score, calculating the mean score on exam 2 by calling R's mean() function
+# would skip that first student in finding the mean.
+# Otherwise, R would just report NA for the mean.
+# Here's a little example:
+
+> x <- c(2,NA,4)
+> mean(x)
+[1] NA
+> mean(x,na.rm=TRUE)
+[1] 3
+
+# In Section 2.8.2, you were introduced to the subset() functioin, which saves you the trouble of specifying na.rm=TRUE.
+# You can apply it in data frames for row selection.
+# The column names are taken in the context of the given data frame. In our example, instead of typing this:
+
+> examsquiz[examsquiz$Exam.1 >= 3.8,]
+
+# We could run this:
+
+> subset(examsquiz,Exam.1 >= 3.8)
+
+# Note that we do not need to write this:
+
+> subset(examsquiz,examsquiz$Exam.1 >= 3.8)
+
+# In some cases, we may wish to rid our data frame of any observation that has at least one NA value.
+# A handy function for this purpose is complete.cases().
+
+> d4
+     kids states
+1    Jack     CA
+2    <NA>     MA
+3 Jillian     MA
+4    John   <NA>
+> complete.cases(d4)
+[1]  TRUE  FALSE  TRUE  FALSE
+> d5 <- d4[complete.cases(d4),]
+> d5
+      kids states
+1     Jack     CA
+3  Jillian     MA
+
+# Cases 2 and 4 were incomplete; hence the FALSE values in the output of complete.cases(d4). 
+# We then use that output to select the intact rows.
