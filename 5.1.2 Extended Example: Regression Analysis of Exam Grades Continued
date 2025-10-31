@@ -1,0 +1,37 @@
+# Recall our course examination data set in Section 1.5
+# There, we didn't have a header, but for this example we do, 
+# And the first few records in the file now are as follows:
+
+"Exam 1"  "Exam 2"  Quiz
+2.01      3.3       4.0
+3.3       2.0       3.7
+4.0       4.0       4.0
+2.3       0.0       3.3
+2.3       1.0       3.3
+3.3       3.7       4.0
+
+# As you can see, each line contains the three test scores for one student.
+# this is the classic two-dimensional file notion, like that alluded to in the preceding output of str().
+# Here, each line in our file contains the data for one observation in a statistical data set.
+# The idea of a data fram is to encapsulate such data, along with variable names, into one object.
+
+# Notice that we have separated the fields here by spaces.
+# Other delimiters maybe specified, notably commas for comma-separated value (CSV) files
+# (As you'll see in Section 5.2.5).
+# The variable names specified in the first record must be separated by the same delimiter as used for the data,
+# which is spaces in this case.
+# If the names themselves contain embedded spaces, as we have there, they must be quoted.
+# We read in the file as before, but in this case we state that there is a header record:
+
+examsquiz <- read.table("exams",header=TRUE)
+
+# The column names now appear, with periods replacing blanks:
+
+> head(examsquiz)
+  Exam.1 Exam.2 Quiz
+1    2.0    3.3  4.0
+2    3.3    2.0  3.7
+3    4.0    4.0  4.0
+4    2.3    0.0  3.3
+5    2.3    1.0  3.3
+6    3.3    3.7  4.0
