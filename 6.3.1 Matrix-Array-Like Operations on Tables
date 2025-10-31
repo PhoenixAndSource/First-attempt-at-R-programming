@@ -1,0 +1,62 @@
+# 6.3.1 Matrix/Array-like Operations on Tables
+
+# Just as most (nonmathematical) matrix/array operations can be used on data frames, 
+# They can be applied to tables, too.
+# (This is not surprising, given that the cell counts portion of a table object is an array.)
+# For example, we can access the table cell counts using matrix notation.
+# Let's apply this to our voting example from the previous section.
+
+> class(cttab)
+[1] "table"
+> cttab[1,1]
+[1] 2
+> cttab[1,]
+ No Yes
+  2   0
+
+# In the second command, even though the first command had shown that cttab had class "cttab",
+# We treated it as a matrix and printed out its "[1,1] element." Continuing this idea,
+# The third command printed the first column of this "matrix".
+# We can multiply the matrix by a scalar. 
+# For instance, Here's how to change cell counts to proportions:
+
+> cttab/5
+          Voted.for.X.Last.Time
+Vote.for.X   No  Yes
+  No        0.4  0.0
+  Not Sure  0.0  0.2
+  Yes       0.2  0.2
+
+# In statistics, the marginal values of a variable are 
+# those obtained when this variable is held constant while others are summed.
+# In the voting example, the marginal values of the Vote.for.X variable
+# are 2 + 0 = 2, 0 + 1 = 1, and 1 + 1 = 2.
+# We can of course obtain these via the matrix apply() function:
+
+> apply(cttab,1,sum)
+      No Not Sure    Yes
+       2        1      2
+
+# Note that the labels here, such as No, came from the row names of the matrix,
+# which table() produced.
+# But R supplies a function addmargins() for this purpose–– that is
+# to find the marginal totals. Here's an example:
+
+> addmargins(cttab)
+          Voted.for.X.Last.Time
+Vote.for.X  No Yes  Sum
+  No         2   0    2
+  Not Sure   0   1    1
+  Yes        1   1    2
+  Sum        3   2    5
+
+# Here, we got the marginal data for both dimensions at once, conveniently superimposed onto the original table.
+# We can get the names of the dimensions and levels through dimnames(), as follows:
+
+> dimnames(cttab)
+$Vote.for.X
+[1] "No"    "Not Sure" "Yes"
+
+$Voted.for.X.Last.Time
+[1] "No"    "Yes"
+
