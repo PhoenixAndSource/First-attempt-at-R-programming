@@ -53,7 +53,7 @@ List of 1
  $ salary: num 55000
 
 # The subsetting operation returned another list consisting of the first two components of the original list j.
-# Note that the word returned makes sense here, since index brackets are fuctions.
+# Note that the word returned makes sense here, since index brackets are functions.
 # This is similar to other cases you've seen for operators that do not at first appear to be functions, such as +.
 # By contrast, you can use double brackets [[]] for referencing only a single component,
 # with the result having the type of that component.
