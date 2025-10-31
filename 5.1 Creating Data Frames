@@ -1,0 +1,20 @@
+# To begin, let's take another look at our simple data frame example from Section 1.4.5:
+
+> kids <- c("Jack","Jill")
+> ages <- c(12,10)
+> d <- data.frame(kids,ages,stringsAsFactors=FALSE)
+> d # matrix-like viewpoint
+   kids  ages
+1  Jack    12
+2  Jill    10
+
+# The first two arguments in the call to data.frame() are clear:
+# we wish to produce a data frame from our two vectors: kids and ages.
+# However, that third argument, stringsAsFactors=FALSE requires more comment.
+
+# If the named argument stringsAsFactors is not specified,
+# then by default, stringsAsFactors will be TRUE. (You can also use options() to arrange the opposite default.)
+# This means that if we create a data frame from a character vector––in this case, 
+# kids––R will convert that vector to a factor.
+# Because our work with character data will typically be with vectors rather than factors,
+# we'll set stringsAsFactors to FALSE. We'll cover factors in Chapter 6.
