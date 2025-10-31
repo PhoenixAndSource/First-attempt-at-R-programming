@@ -1,0 +1,70 @@
+# It can be difficult to view a table that is very big, with a large number of rows or dimensions.
+# One approach might be to focus on the cells with the largest frequencies.
+# That's the purpose of the tabdom() function developed below––
+# it reports the dominant frequencies in a table. Here's a simple call:
+
+tabdown(tbl,k)
+
+This reports the cells in the table tbl that have the k largest frequencies.
+    Here's an example:
+
+> d <- c(5,12,13,4,3,28,12,12,9,5,5,13,5,4,12)
+> dtab <- table(d)
+> tabdom(dtab,3)
+   d  Freq
+3  5     4
+5 12     4
+2  4     2
+
+# The function tells us that the values 5 and 12 were the most frequent in d,
+# with four instances each, and the next most frequent value was 4, with two instances.
+# (The 3,5, and 2 and the left are actually extraneous information;
+# see the following discussion regarding converting a table to a data frame.)
+
+# As another example, consider our table cttab in the examples in the preceding sections:
+
+> tabdom(cttab,2)
+  Vote.for.X Voted.For.Last.Time Freq
+1         No                  No    2
+3        Yes                  No    1
+
+# So the combination No-No was most frequent, with two instances,
+# with the second most frequent being Yes-No, with one instance.
+# Well, how is this accomplished? It looks fairly complicated
+# but actually the work is made pretty easy by a trick,
+# exploiting the fact that you can present tables in data frame format.
+# Let's use our cttab table again.
+
+> as.data.frame(cttab)
+  Vote.for.X Voted.For,X,Last,Time Freq
+1         No                    No    2
+2   Not Sure                    No    0
+3        Yes                    No    1
+4         No                   Yes    0
+5   Not Sure                   Yes    1
+6        Yes                   Yes    1
+
+# Note that this is not the original data frame ct from which the table cttab
+# was constructed. It is simply a different presentation of the table itself.
+# There is one row for each combination of the factors, with a Freq column added
+# to show the number of instances of each combination. This latter feature makes our task quite easy.
+
+# finds the cells in the table tbl with the k highest frequencies; handling
+# of ties is unrefined
+tabdom <- function(tbl,k) {
+  # create a data frame representation of tbl, adding a Freq column
+  tbldf <- as.data.frame(tbl)
+  # determine the proper positions of the frequencies in a sorted order
+  freqord <- order(tbldf$Freq,decreasing=TRUE)
+  # rearrange the data frame in that order, and take the first k rows
+  dom <- tbldf[freqord,][1:k,]
+  return(dom)
+}
+
+# The comments should make the code self-explanatory.
+
+# The sorting approach in line 7, which makes use of order(), is the standard way to sort a data frame
+# (worth remembering, since the situation arises rather frequently).
+# The approach taken here–– converting a table to a data frame–– could also be used in Section 6.3.2.
+# However, you would need to be careful to remove levels from the factors to avoid zeros in cells.
+
