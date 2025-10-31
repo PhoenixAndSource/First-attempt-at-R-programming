@@ -1,0 +1,123 @@
+Let's continue working with our voting example:
+
+> cttab
+          Voted.for.X.Last.Time
+Vote.for.X  No  Yes
+  No         2    0
+  Not Sure   0    1
+  Yes        1    1
+
+# Suppose we wish to present this data at a meeting,
+# Concentrating on those respondents who know they will 
+# vote for X in the current election. In other words,
+# We wish to eliminate the "Not Sure" entries and present a subtable that looks like this:
+
+        Voted.for.X.Last.Time
+Vote.for.X  No  Yes
+  No         2    0
+  Yes        1    1
+
+# The function subtable() below performs subtable extraction.
+# It had two arguments:
+# tbl: The table of interest, of class "table".
+# subnames: A list specifying the desired subtable extraction.
+# Each component of this list is named after some dimension of tbl,
+# And the value of that component is a vector of the names of the desired levels.
+
+# So let's review what we have in this example before looking at the code.
+# The argument cttab will be a two-dimensional table, with dimension names
+# Voted.for.X and Voted.for.X.Last.Time.
+# Within those two dimensions, 
+# the level names are No, Not Sure, and Yes in the first dimension, and No and Yes in the second.
+# Of those, we wish to exclude the Not Sure cases, 
+# so our actual argument corresponding to the formal argument subnames is as follows:
+
+list(Vote.for.X=c("No","Yes"),Voted.for.X.Last.Time=c("No","Yes"))
+
+# We can now call the functioin.
+
+> subtable(cttab,list(Vote.for.X=c("No","Yes"),
++    Voted.for.X.Last.Time=c("No","Yes")))
+          Voted.for.X.Last.Time
+Voted.for.X No Yes
+        No   2   0
+        Yes  1   1
+
+# Now that we have a feel for what the function does, let's take a look at its innards.
+
+subtable <- function(tbl,subnames) {
+  # get array of cell counts in tbl
+  tblarray <- unclass(tbl)
+  # we'll get the subarray of cell counts corresponding to subnames by 
+  # calling do.call() on the "[" function; we need to build up a list
+  # of arguments first
+  dcargs <- list(tblarray)
+  ndims <- length(subnames) # number of dimensions
+  for (i in 1:ndims) {
+    dcargs[[i+1]] <- subnames[[1]]  
+  }
+  subarray <- do.call("[",dcargs)
+  # now we'll build the new table, consisting of the subarray,the
+  # numbers of levels in each dimension, and the dimnames() value, plus
+  # the "table" class attribute
+  dims <- lapply(subnames,length)
+  subtbl <- array(subarray,dims,dimnames=subnames)
+  class(subtbl) <- "table"
+  return(subtbl)
+}
+
+# So, what's happening here? To prepare for writing this code,
+# first we determine the structure of objects of class "table".
+# Looking through the code of the function table(), 
+# I found that at its core, an object of class "table"
+# consists of an array whose elements are the cell counts,
+# So the strategy is to extract the desired subarray, then add names to the dimensions of the subarray,
+# And then bestow "table" class status to the result.
+
+# For the code here, then, the first task is to form the subarray corresponding to the user's desired subtable.
+# And this constitutes most of the code.
+# To this end, in line 3, we first extract the full cell counts array, storing it in tblarray.
+# The question is how to use that to find the desire subarray.
+# In principle, this is easy. In practive, that's not always the case.
+# To get the desired subarray, I needed to form a subsetting expressioin on the array tblarray–– something like this:
+
+tblarray[some index ranges here]
+
+# In our voting example, the expression is as follows:
+
+tblarray[c("No","Yes"),c("No","Yes")]
+
+# This is simple in concept but difficult to do directly, since tblarray could be of different dimensions 
+# (two, three, or anything else.)
+# Recall that R's array subscripting is actually done via a function names '['().
+# This function takes a variable number of arguments:
+# two for two-dimensional arrays, three for three-dimensional arrays, and so on.
+
+# This problem is solved by using R's do.call().
+# This function has the following basic form:
+
+do.call(f,argslist)
+
+# where f is a function and arglist is a list of arguments on which to call f().
+# In other words, the preceding code basically does this:
+
+f(arglist[[1]],argslist[[2]],...)
+
+# This makes it easy to call a function with a variable number of arguments.
+# For our example, we need to form a list consisting first of tblarray and then the user's desired levels for each dimension.
+# Our list looks like this:
+
+list(tblarray,Vote.for.X=c("No","Yes"),Voted.for.X.Last.Time=c("No","Yes"))
+
+# Lines 7 through 11 build up this list for the general case.
+# That's our subarray. Then we need to attach the names and set the class to "table".
+# The former operation can be done via R's array() function,
+# which has the following arguments:
+
+# data: The data to be placed into the new array.
+# in our case this is a subarray.
+
+# dim: The dimension lengths (number of rows, number of columns, number of layers, and so on).
+# In our case, this is the value  ndims, computed in line 16.
+
+# dimnames: The dimension names and the names of their levels, already given to us by the user as the argument subnames.
