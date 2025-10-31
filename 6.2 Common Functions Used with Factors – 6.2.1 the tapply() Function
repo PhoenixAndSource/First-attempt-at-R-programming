@@ -1,0 +1,91 @@
+# 6.2 Common Functions Used with Factors
+# with factors, we have yet another member of the family of apply functions, tapply.
+# We'll look at that function, as well as two other functions commonly used with factors: split() and by().
+
+# 6.2.1 The tapply() Function
+
+# As motivation, suppose we have a vector x of ages of voters and a 
+# factor f showing some nonnumeric trait of those voters,
+# such as party affiliatioin (Democrat, Republican, Unaffiliated).
+# We might wish to find the mean ages in x within each of the party groups.
+
+# In typical usage, the call tapply(x,f,g) has 
+# x as a vector,
+# f as a factor or list of factors, and 
+# g as a function.
+# The function g() in our little example above would be R's built-in mean() function.
+# If we wanted to group by both party and another factor, say gender,
+# We would need f to consist of the two factors, party and gender.
+
+# Each factor in f must have the same length as x,
+# This makes sense in light of the voter example above;
+# We should have as many party affiliations as ages.
+# if a component of f is a vector, it will be coerced into a factor by applying as,factor() to it.
+# The operation performed by tapply() is to (temporarily) split x into groups,
+# each group corresponding to a level of the factor 
+# (or a comvination of levels of the factors in the case of multiple factors),
+# and then apply g() to the resulting subvectors of x.
+# here's an example:
+
+> ages <- c(25,26,55,37,21,42)
+> affils <- c("R","D","D","R","U","D")
+> tapply(ages,affils,mean)
+  D  R  U
+ 41 31 21
+
+# Let's look at what happened.
+# The function tapply() treated the vector ("R","D","D","R","U","D")
+# as a factor with levels "D","R", and "U".
+# It noted that "D" occurred in indices 2,3, and 6;
+# "R" occurred in indices 1 and 4;
+# and "U" occurred in index 5.
+# For convenience, let's refer to the three index vectors (2,3,6), (1,4), and (5) 
+# as x,y, and z.
+# Then tapply() computed mean(u[x]),mean(u[y]), and mean(u[z])
+# and returned those means in a three-element vector.
+# And that vector's element names are "D", "R", and "U",
+# reflecting the factor levels that were used by tapply().
+
+# What if we have two or more factors? Then each factor yields a set of groups,
+# As in the preceding example, and the groups are ANDed together.
+# As an example, suppose that we have an economic data set that includes that variables for gender, age and income.
+# Here, the call tapply(x,f,g) might have x as income and f as a pair of factors:
+# one for gender and the other coding whether the person is older or younger than 25.
+# We may be interested in finding the mean income,
+# broken down by gender and age.
+# If we set g() to be mean(), tapply() will return the mean incomes in each of four subgroups:
+# Male and under 25 years old
+# Female and under 25 years old
+# Male and over 25 years old
+# Female and over 25 years olf
+
+# Here's a toy example of that setting:
+
+> d <- data.frame(list(gender=c("M","M","F","M","F","F"),
++    age=c(47,59,21,32,33,24),income=c(55000,88000,32450,76500,123000,45650)))
+> d
+  gender age income
+1      M  47  55000
+2      M  59  88000
+3      F  21  32450
+4      M  32  76500
+5      F  33 123000
+6      F  24  45650
+> d$over25 <- ifelse(d$age > 25,1,0)
+> d
+  gender age income over25
+1      M  47  55000      1
+2      M  59  88000      1
+3      F  21  32450      0
+4      M  32  76500      1
+5      F  33 123000      1
+6      F  24  45650      0
+> tapply(d$income,list(d$gender,d$over25),mean)
+      0          1
+F  39050 123000.00
+M     NA  73166.67
+
+# We specified two factors, gender and indicator variable for age over or under 25.
+# Since each of these factors has two levels, tapply() partitioned the income data into four groups,
+# One for each combination of gender and age,
+# And then applied to mean() function to each group.
