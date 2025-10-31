@@ -1,0 +1,81 @@
+# In a study of engineers and programmers, I considered the question, 
+# "How many of these workers are the best and the brightest–– that is, people of extraordinary ability?"
+# (Some of the details have been changed here.)
+
+# The government data I had available was limited. One (admittedly imperfect) way
+# to determine whether a worker is of extraordinary ability 
+# is to look at the ratio of actual salary to the government prevailing wage for that job and location.
+# If that ratio is substantially higher than 1.0,
+# you can reasonably assume that this worker has a high level of talent.
+
+# using R to prepare and analyze the data and will present excerpts of preparation code here:
+# first I read in the data file:
+
+all2006 <- read.csv("2006.csv", header=TRUE,as.is=TRUE)
+
+# The function read.csv() is essentially identical to read.table() 
+# except that the input data is in the CSV format exported by spreadsheets,
+# which is the way the data set was prepared by the US Department of Labor (DOL).
+# The as.is argument is the negation of stringsAsFactors, which you saw earlier in Section 5.1.
+# So, setting as.is to TRUE here is simply an alternate way to achieve stringsAsFactors=FALSE.
+
+# At this point, we have a data frame, all2006, consisting of all the data for the year 2006.
+# Then we do some filtering:
+
+all2006 <- all2006[all2006$Wage_Per=="Year",] # exclude hourly-wagers
+all2006 <- all2006[all2006$Wage_Offered_From > 20000,] # exclude weird cases
+all2006 <- all2006[all2006$Prevailing_Wage_Amount > 200,] # exclude hrly prv wg
+
+# These operations are typical data cleaning. 
+# Most large data sets contain some outlandish values––some obvious errors,
+# Others use different measurement systems, and so on.
+# we need to remedy this situation before doing any analysis.
+# We also need to create a new column for the ratio between actual wage and prevailing wage
+
+all2006$rat <- all2006$Wage_Offered_From / all2006$Prevailing_Wage_Amount
+
+# Since I knew I would be calculating the median in this new column for many subsets of data,
+# I defined a function to do the work:
+
+medrat <- function(dataframe) {
+  return(median(dataframe$rat,na.rm=TRUE))
+}
+
+# Note the need to exclude NA values, which are common in government data sets.
+# I was particularly interested in three occupations and thus 
+# extracted subdata frames for them to make their analyses more convenient:
+
+se2006 <- all2006[grep("Software Engineer",all2006),]
+prg2006 <- all2006[grep("Programmer",all2006),]
+ee2006 <- all2006[grep("Electronics Engineer",all2006),]
+
+# Here, I used R's grep() function to identify the rows containing the given job title.
+# Details on this function are in Chapter 11.
+# Another aspect of interest was analysis by firm.
+# I wrote this function to extract the subdata frame for a given firm:
+
+makecorp <- function(corpname) {
+   t <- all2006[all2006$Employer_Name == corpname,]
+   return(t)
+}
+
+# I then created subdata frames for a number of firms (only some are shown here).
+
+corplist <- c("MICROSOFT CORPORATION","ms","INTEL CORPORATION","intel","
+    SUN MICROSYSTEMS, INC.","sun","GOOGLE INC.","google")
+
+for (i in 1:(length(corplist)/2)) {
+   corp <- corplist[2*i-1]
+   newdtf <- paste(corplist[2*i],"2006",sep="")
+   assign(newdtf,makecorp(corp),pos=.GlobalEnv)
+}
+
+# There's quite a bit to discuss in the above code. First, note that I want the variables
+# I'm creating to be at the top (that is, global) level, 
+# which is the usual place one does interactive analysis.
+# Also, I'm creating my new variable names from character strings, such as "intel2006."
+# For these reasons, the assign() function is wonderful.
+# It allows me to assign a variable by its name as a string and enables me to specify top level
+# (as discussed in Section 7.8.2).
+# The paste() function allows me to concatenate strings, 
+# with sep="" specifying that I don't want any characters between strings in my concatenation.
