@@ -1,0 +1,29 @@
+# Two functions are handy for applying functions to lists: lapply and sapply.
+
+# 4.4.1 Using the lapply() and sapply() Functions
+# The function lapply() (for list apply) works like the matrix apply() function,
+# calling the specified function on each component of a list (or vector coerced to a list)
+# and returning another list. Here's an example:
+
+> lapply(list(1:3,25:29),median)
+[[1]]
+[1] 2
+
+[[2]]
+[1] 27
+
+# R applied median() to 1:3 and to 25:29,
+# returning a list consisting of 2 and 27.
+# In some cases, such as the example here,
+# the list returned by lapply() could be simplified to a vector or matrix.
+# This is exactly what sapply() (for simplified [l]apply) does.
+
+> sapply(list(1:3,25:29),median)
+[1] 2 27
+
+# You saw an example of matrix output in Section 2.6.2. 
+# There, we applied a vectorized, vector-valued function––
+# A function whose return value is a vector,
+# Each of whose components is vectorized–– to a vector input.
+# Using sapply(), rather than applying the function directly,
+# gave us the desired matrix form in the output.
