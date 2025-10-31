@@ -1,0 +1,37 @@
+# As with lists, we can use lapply and sapply functions with data frames.
+
+# 5.4.1 Using lapply() and sapply() on Data Frames
+
+# Keep in mind that data frames are special cases of lists,
+# with the list components consisting of the data frame's columns.
+# Thus, if you call lapply() on a data frame with a specified function f(),
+# then f() will be called on each of the frame's columns, 
+# with the return values placed in a list.
+
+# For instance, with our previous example, we can use lapply as follows:
+
+> d
+  kids  ages
+1 Jack    12
+2 Jill    10
+> dl <- lapply(d,sort)
+> dl
+$kids
+[1] "Jack" "Jill"
+
+$ages
+[1] 10 12
+
+# so, dl is a list consisting of two vectors, the sorted versions of kids and ages.
+# note that dl is just a list, not a data frame We could coerce it to a data frame, like this:
+
+as.data.frame(dl)
+  kids  ages
+1 Jack    10
+2 Jill    12
+
+# But this would make no sense, as the correspondence between names and ages has been lost.
+# Jack, for instance, is now listed as 10 years old instead of 12.
+# (But if we wished to sort the data frame with respect to one of the columns,
+# preserving the correspondences, we could follow the approach presented on page 135.)
+  
