@@ -1,0 +1,37 @@
+# Let's use the lapply() function in our abalone gender example in Section 2.9.2.
+# Recall that at one point in that example,
+# we wished to know the indices of the observations that were male, female, and infant.
+# For an easy demonstration, let's use the same test case: a vector of genders.
+
+g <- c("M","F","F","I","M","M","F")
+
+# A more compact way of accomplishing our goal is as follows:
+
+> lapply(c("M","F""I"),function(gender) which(g==gender))
+[[1]]
+[1] 1 5 6
+
+[[2]]
+[1] 2 3 7
+
+[[3]]
+[1] 4
+
+# The lapply() function expects its first argument to be a list.
+# Here is was a vector, but lapply() will coerce that vector to a list form.
+# Also, lapply() expect its second argument to be a function.
+# This could be the name of a function, as you saw before, or the actual code, as we have here.
+# This is an anonymous function, which you'll learn more about in Section 7.13.
+
+# Then lapply() calls that anonymous function on "M", then on "F", and then on "I".
+# In that first case, the function calculate which(g=="M"), giving us the vector of indices in g of the males.
+# After determining the indices for the females and infants, 
+# lapply() will return the three vectors in a list.
+
+# Note that even though the object of our main attention is the vector g of genders, 
+# it is not the first argument in the lapply() call in the example.
+# Instead, that argument is an innocuous-looking vector of the three possible gender encodings.
+# By contrast, g is mentioned only briefly in the function,
+# As the second actual argument.
+# This is a common situation in R. An even better way to do this will be presented in Section 6.2.2.
+
