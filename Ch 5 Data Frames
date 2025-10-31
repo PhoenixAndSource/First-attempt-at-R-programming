@@ -1,0 +1,17 @@
+On an intuitive level, a data frame is like a matrix,
+with a two-dimensional rows-and-columns structure.
+However, it differs from a matrix in that each column may have a different mode.
+For instance, one column may consist of numbers,
+and another column might have character strings.
+In this sense, just as lists are the heterogeneous analogs of vectors in one dimension,
+data frames are the heterogeneous analogs of matrices for two-dimensional data.
+
+On a technical level, a data frame is a list, with the components of 
+that list being equal-length vectors. Actually, R does allow the components
+to be other types of objects, including other data frames. This give us 
+heterogeneous-data analog of arrays in our analogy.
+But this use of data frames is rare in practice, here, we will assume all components
+of a data frame are vectors.
+
+In this chapter, we'll present quite a few data frame examples, so you
+can become familiar with their variety of uses in R.
