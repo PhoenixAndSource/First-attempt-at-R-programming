@@ -1,0 +1,29 @@
+# Now that we have a data frame, let's explore a bit.
+# Since d is a list, we can access it as such via component index values or component names:
+
+> d [[1]]
+[1] "Jack" "Jill"
+> d$kids
+[1] "Jack" "Jill"
+
+# But we can treat it in a matrix-like fashion as well.
+# For example, we can view column 1:
+
+> d[,1]
+[1] "Jack" "Jill"
+
+# This matrix-like quality is also seen when we take d apart using str():
+
+> str(d)
+'data.frame':  2 obs. of 2 variables:
+$ kids: chr "Jack" "Jill"
+$ ages: num  12 10
+
+# Consider three ways to access the first column of our data frame above:
+# d[[1]], d[,1], and d$kids. Of these, the third would generally considered to be clearer and,
+# more importantly, safer than the first two. 
+# This better identifies the column and makes it less likely that you will reference the wrong column.
+# But in writing general code– say writing R packages –– matrix-like notation d[,1] is needed,
+# And it is especially handy if you are extracting subdata frames 
+# (As you'll see when we talk about extracting subdata frames in section 5.2)
+
