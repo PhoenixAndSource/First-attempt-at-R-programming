@@ -1,0 +1,125 @@
+# The text concordance creator, findwords(), 
+# which we developed in Section 4.2.4, 
+# returns a list of word locations, indexed by word. 
+# It would be nice to be able to sort this list in various ways.
+# Recall that for the input file testconcorda.txt, we got this output:
+
+$the
+[1] 1 5 63
+
+$here
+[1] 2
+
+$means
+[1] 3
+
+$that
+[1] 4 40
+...
+
+# Here's code to present the list in alphabetical order by word:
+
+# sorts wrd1st, the output of findwords() alphabetically by word
+alphawl <- function(wrd1st) {
+  nms <- names(wrd1st) # the words
+  sn <- sort(nms)  # same words in alpha order
+  return(wrd1st[sn]) # return rearranged version
+}
+
+# Since our words are the names of the list components, 
+# we can extract the words by simply calling names().
+# We sort these alphabetically, and then in line 5,
+# we use the sorted version as input to list indexing,
+# giving us a sorted version of the list.
+# Note the use of single brackets, rather than double, 
+# as the former are required for subsetting lists.
+# (You might also consider using order() instead of sort(), which we'll look at in Section 8.3) let's try it out:
+
+> alphawl(wl)
+$and
+[1] 25
+
+$be
+[1] 67
+
+$but
+[1] 32
+
+$case
+[1] 17
+
+$consists
+[1] 20 41
+
+$example
+[1] 50
+...
+
+# We can sort by word frequency in a similar manner.
+
+# orders the output of findwords() by word frequency
+freqwl <- function(wrdlst) {
+  freqs <- sapply(wrdlst,length)  # get word frequencies
+  return(wrdlst[order(freqs)])
+}
+
+# In line 3, we are using the fact that each element in wrdlst is a vector of numbers
+# representing the positions in our input file at which the given word is found.
+# Calling length() on that vector gives us the number of times the given word appears in that file.
+# The result of calling sapply() will be the vector of word frequencies.
+
+# We could use sort() here again, but order() is more direct.
+# This latter function returns the indices of a sorted vector with respect to the original vector. Here's an example:
+
+> x <- c(12,5,13,8)
+> order(x)
+[1] 2 4 1 3
+
+# The output here indicates that x[2] is the smallest element in x, 
+# x[4] is the second smallest, and so on.
+# In our case, we use order() to determine which word is least frequent,
+# second least frequent, and so on.
+# Plugging these indices into our word list gives us the same word list, 
+# but in order of frequency. Let's check it.
+
+> freqwl(wl)
+$here
+[1] 2
+
+$means
+[1] 3
+
+$first
+[1] 6
+...
+$that
+[1] 4 40
+
+$'in'
+[1] 8 15
+
+$line
+[1] 10 24
+...
+$this
+[1] 9 16 29 33
+
+$of
+[1] 11 21 42 56
+
+$output
+[1] 12 19 39 57
+
+# yep ordered from least to most frequent.
+# we can also do a plot of the most frequent words.
+# I ran the following code on an article on R in the New York Times,
+# "Data Analysts Captivated by R's Power," from January 6, 2009.
+
+> nyt <- findwords("nyt.txt")
+Read 1011 items
+> synt <- freqwl(nyt)
+> nwords <- length(ssnyt)
+> freqs9 <- sapply(ssnyt[round(0.9*nwords):nwords],length)
+> barplot(freqs9)
+
+# goal is to plot the frequencies of the top 10 percent of the words in the article.
