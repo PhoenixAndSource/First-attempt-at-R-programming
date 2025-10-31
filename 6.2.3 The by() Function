@@ -1,0 +1,62 @@
+# 6.2.3 The by() Function
+
+# Suppose in the abalone example we wish to do regression analyses 
+# of diameter against length separately for each gender code:
+# males, females, and infants.
+# At first, this seems like something tailor-made for tapply(),
+# But the first argument of that function must a vector,
+# not a matrix or a data frame.
+# The function to be applied can be multivariate––for example, range()
+# but the input must be a vector. Yet the input for regression is a matrix
+# (Or data frame) with at least two columns: 
+# One for the predicted variable and one or more for predictor variables
+# In our abalone data application,
+# the matrix would consist of a column for the diameter data 
+# and a column for length.
+
+# The by() function can be used here.
+# It words like tapply() (which it calls internally, in fact),
+# But it is applied to objects rather than vectors.
+# Here's how to use it for the desired regression analyses:
+
+> aba <- read.csv("abalone.data",header=TRUE)
+> by(aba,aba$Gender,function(m) 1m(m[,2]~m[,3]))
+aba$Gender: F
+
+Call:
+1m(formula = m[, 2] ~ m[, 3])
+
+Coefficients:
+(Intercept)      m[, 3]
+    0.04288     1.17918
+
+aba$GEnder: I
+
+Call:
+1m(formula = m[, 2] ~ m[, 3])
+
+Coefficients:
+(Intercept)      m[, 3]
+    0.02997     1.21833
+
+aba$Gender: M
+
+Call:
+1m(formula = m[, 2] ~ m[,3])
+
+Coefficients:
+(Intercept)      m[, 3]
+    0.03653     1.19480
+
+# Calls to by() look very similar to calls to tapply(), 
+# with the first argument specifying our data,
+# The second the grouping factor,
+# and the third the function to be applied to each group.
+
+# Just as tapply() forms groups of indices of a vector according to levels of a factor,
+# this by() call finds groups of row numbers of the data frame aba.
+# That creates three subdata frames: 
+# one for each gender level of M,F, and I.
+# The anonymous function we defined regresses the second column of its matrix argument m against the third column.
+# This function will be called three times––once for each of the three subdata frames created earlier––
+# Thus producing the three regression analyses.
