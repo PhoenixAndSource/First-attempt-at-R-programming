@@ -1,0 +1,108 @@
+# Standard Chinese, often referred to as Mandarin outside China, is officially termed putonghua or guoyu.
+# mapsound() useful for a list of tranformations and their frequencies of occurence. It relies on some support functions.
+
+# we'll call x the source value, with h, s, and so on being the mapped values.
+
+# Here are the formal parameters:
+
+# df: A data frame consisting of the pronunciation data of two fangyan
+# fromcol and tocol: Names in df of the source and mapped columns
+# sourceval: The source value to be mapped, such as x in the preceding example
+
+# Here is the head of a typical two-fangyan data frame, canma8, that would be used for df:
+
+> head(canman8)
+  Ch char    Can    Man    Can cons    Can Sound    Can  tone Man cons Man sound Man tone
+1           yat1    yi1           y           at            1        y         i 1
+2          ding1  ding1           d          ing            1        d       ing 1
+3          chat1    qi1          ch           at            1        q         i 1
+4         jeung6 zhang4           j         eung            6       zh       ang 4
+5         seung5 shang4           s         eung            5       sh       ang 3
+6            ha5   xia4           h            a            5        x        ia 4
+
+# The function returns a list consisting of two components:
+
+# counts: A vector of integers, indexed by the mapped values, showing the counts of those values.
+# The elements of the vector are named according to the mapped values.
+# Images: A list of character vectors. Again, the indices of the list are the mapped values,
+# and each vector consists of all the characters that correspond to the geven mapped value.
+
+# To make this concrete, let's try it out:
+
+> m2cx <- mapsound(canman8,"Man cons","Can cons","x")
+> m2cx$counts
+ch f g h   j k kw n  s  y
+15 2 1 87 12 4  2 1 81 21
+
+# We see that x maps to ch 15 times, to f 2 times, 
+# and so on. Note that we could have called sort() to m2cx$counts 
+# to view the mapped images in order, from most to least frequent.
+
+# the mandarin-speaking learner of Cantonese can then see that if they wish to know the 
+# Cantonese pronunciation of a word whose Mandarin romanized form begins with x,
+# the Cantonese almost certainly begins with h or s.
+# Little aids like this should help the learning process quite a bit.
+
+# To try to discern more patterns, 
+# the learner may wish to determine in which characters x maps to ch, for example.
+# We know from the result of the preceding example that there are six such characters.
+# Which ones are they?
+# That information is stored in images.
+# The latter, as mentioned, is a list of vectors.
+# We are interested in the vector corresponding to ch:
+
+> head(m2cx$images[["ch"]])
+    Ch  char    Can  Man  Can  cons  Can sound  Can  tone  Man  cons  Man  sound  Man  tone
+613           chau3 xiu4         ch         au          3          x          iu  4
+982           cham4 xin2         ch         am          4          x          in  2
+1050          chun3 xun2         ch         un          3          x          un  2
+1173          chui4  xu2         ch         ui          4          x           u  2
+1184          chun3 xun2         ch         un          3          x          un  2
+1566           che4 xie2         ch          e          4          x          ie  2
+
+# Now, let's look at the code, Before viewing the code for mapsound() itself,
+# let's consider another routine we need for support.
+# It is assumed here that the data frame df that is input to mapsound() is produced by merging two frames for individual fangyans.
+# In this case, for instance, the head of the Cantonese input frame is as follows:
+
+> head(can8)
+  Ch char  Can
+1         yat1
+2        yuet3
+3        ding1
+4        chat1
+5        naai5
+6         gau2
+
+# The one for Mandarin is similar. We need to merge these two frames into canman8, seen earlier. 
+# The code is written so that this operation not only combines the frames 
+# but also separates the romanization of a character into initial consonant,
+# the remainder of the romanization, and a tone number.
+# for example, ding1 is separated into d, ing, and 1.
+
+# We could similarly explore transformations in the other direction, 
+# from Cantonese to Mandarin, and involving the nonconsonant remainders of characters.
+# For example, this call determines which characters have eung as the nonconsonant portion of their Cantonese Pronunciation:
+
+> c2meung <- mapsound(canman8,c("Can cons","Man cons"),"eung")
+
+# We could then investigate the associated Mandarin sounds.
+# Here is the code to accomplish all this:
+
+# merges data frames for 2 fangyans
+merge2fy <- function(fy1,fy2) {
+    outdf <- merge(fy1,fy2)
+    # separate tone from sound, and create new columns
+    for (fy in list(fy1,fy2)) {
+      # saplout will be a matrix, init cons in row 1, remainders in row # 2, and tones in row 3
+      saplout <- apply((fy[[2]]),sepsoundtone)
+      # convert it to a data frame
+      tmpdf <- data.frame(fy[,1],t(saplout),row.names=NULL,
+        stringsAsFactors=F)
+      # add names to the columns
+      consname <- paste(names(fy)[[2]],"cons",sep="")
+      restname <- paste(names(fy)[[2]]," sound", sep="")
+      tonename <- paste(names(fy)[[2]]," tone",sept="")
+      names(tmpdf) <- c()
+    }
+}
