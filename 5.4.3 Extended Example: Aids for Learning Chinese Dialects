@@ -234,4 +234,4 @@ list(counts=sapply(sp,nrow),images=sp)
 # Recall that in R, the last value computed by a function is automatically returned anyway,
 # without a return() call. 
 # However, the time savings here are really small and rarely matter,
-# And again, my personal belief is that including the return() call is clearer.
+# but we can also see that including the return() call is clearer.
