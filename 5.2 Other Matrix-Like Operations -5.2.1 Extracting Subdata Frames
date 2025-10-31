@@ -1,0 +1,40 @@
+# Various matrix operations also apply to data frames. Most notably and usefully,
+# we can do filtering to extract various subdata frames of interest.
+
+# 5.2.1 Extracting Subdata Frames
+# As mentioned, a data frame can be viewed in row-and-column terms.
+# In particular, we can extract subdata frames by rows or columns.
+# Here's an example:
+
+> examsquiz[2:5,]
+  Exam.1  Exam.2  Quiz
+2    3.3       2   3.7
+3    4.0       4   4.0
+4    2.3       0   3.3
+5    2.3       1   3.3
+> examsquiz[2:5,2]
+[1] 2 4 0 1
+> class(examsquiz[2:5,2])
+[1] "numeric"
+> examsquiz[2:5,2,drop=FALSE])
+[1] "data.frame"
+
+# Note that in that second call, since examsquiz[2:5,2] is a vector, 
+# R created a vector instead of another data frame.
+# By specifying drop=FALSE,
+# as described for the matrix case in Section 3.6, we can keep it as a 
+# (one-column) data frame.
+# We can also do filtering. Here's how to extract the subframe of all students 
+# whose first exam score was at least 3.8
+
+> examsquiz[examsquiz$Exam.1 >= 3.8,]
+    Exam.1  Exam.2  Quiz
+3        4     4.0   4.0
+9        4     3.3   4.0
+11       4     4.0   4.0
+14       4     0.0   4.0
+16       4     3.7   4.0
+19       4     4.0   4.0
+22       4     4.0   4.0
+25       4     4.0   3.3
+29       4     3.0   3.7
