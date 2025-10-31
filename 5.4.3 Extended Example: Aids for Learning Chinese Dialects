@@ -129,3 +129,109 @@ sepsoundtone <- function(pronoun) {
   therest <- substr(pronun,numcons+1,nchr-numtones)
   return(c(cons,therest,tone))
 }
+
+# So, even the merging code is not so simple. And this code makes some simplifying assumptions,
+# Excluding some important cases.
+# Textual analysis is never for the faint of heart!
+
+# Not surprisingly, the merging process begins with a call to merge(),
+# in line 3. This creates a new data frame, outdf, to which we will append new columns
+# for the separated sound components.
+# The real work, then, involves the separation of a romanization into sound components,
+# For that, there is a loop in line 5 across the two input data frames.
+# In each iteratioin, the current data frame is split into sound components,
+# With the result appended to outdf in line 19.
+# Note the comment preceding that line regarding the unsuitability of cbing() in this situation.
+# The actual separation into sound componenets is done in line 8.
+# Here, we take a column of romanizations, such as the following:
+
+yat1
+yuet3
+ding1
+chat1
+naai5
+gau2
+
+# We split it into three columns, consisting of initial consanant, remainder of the sound, and tone.
+# For instance, yat1 will be split into y, at, and 1.
+# This is a very natural candidate for some kind of "apply" function, 
+# and indeed sapply() is used in line 8.
+# Of course, this call requires that we write a suitable function to be applied.
+# Of course, this call requires that we write a suitable function to be applied
+# (If we had been lucky there would have been an existing R function that worked, but no such good fortune here.)
+# The function we use is sepsoundtone(), starting in line 26.
+
+# The sepsoundtone() function makes heavy use of R's substr() for sub-string function,
+# described in detail in Chapter 11.
+# In line 31, for example, we loop until we collect all the initial consonants, such as ch,
+# The return value, in line 40, 
+# consists of the three sound components extracted from the given romanized form,
+# The formal parameter pronun.
+
+# Note the use of R's built-in constant, letters, in line 37. 
+# We use this to sense whether a given character is numberic,
+# which means it's a tone.
+# Some romanizations are toneless.
+
+# Line 8 will then return a 3-by-1 matrix,
+# with one row for each of the three sound components.
+# We wish to convert this to a data frame for merging with outdf in line 19,
+# and we prepare for this in line 10.
+
+# Note that we call the matrix transpose function t() to put our information into columns rather than rows.
+# This is needed because data-frame storage is by columns,
+# Also, we include a column fy[,1], the Chinese characters themselves, 
+# to have a column in common in the call to merge() in line 19.
+
+# Now let's turn to the code for mapsound(),
+# which actually is simpler than the preceding merging code.
+
+mapsound <- function(df,fromcol,tocol,sourceval) {
+    base <- which(df[[fromcol]] == sourceval)
+    basedf <- df[base,]
+    # determine which rows of basedf correspond to the various mapped
+    # values
+    sp <- split(basedf,basedf[[tocol]])
+    retval <- list()
+    retval$counts <- sapply(sp,nrow)
+    retval$images <- sp
+    return(retval)
+}
+
+# Recall that the argument df is the two-fanghan data frame,
+# output from merge2fy().
+# The arguments fromcol and tocol are the names of the source and mapped columns.
+# The string sourceval is the source value to be mapped.
+# For concreteness, consider the earlier examples in which sourceval was x.
+
+# The first task is to determine which rows in df correspond to sourceval.
+# This is accomplished via a straightforward application of which() in line 2.
+
+# In the latter frame, consider the form that basedf[[tocol]] will take in line 6.
+# These will be the values that x maps to––that is, ch, h, and so on.
+# The purpose of line 6 is to determine which rows of basedf  contain which of these mapped values.
+# Here we use in R's split() function.
+# We'll discuss split() in detail in Section 6.2.2, 
+# but the salient point is that sp will be a list of data frames: one of ch, one for h and so on.
+
+# This sets up line 8. Since sp will be a list of data frames –– one for each mapped value
+# applying the nrow() function via sapply() will give us the counts of the numbers of characters for each of the mapped values,
+# such as the number of characters in which the map x → ch occurs (15 times, as seen in the example call).
+
+# The complexity of the code here makes this a good time to comment on programming style.
+# Some of us might point out, correctly, that lines 2 and 3 could be replaced by a one-liner:
+
+basedf <- df[df[[fromcol]] == sourceval,]
+
+# but we can see that line, with its numerous brackets, is harder to read.
+# My personal preference is to break down operations if they become too complex.
+
+# Similarly, the last few lines of code could be compacted to another one-liner:
+
+list(counts=sapply(sp,nrow),images=sp)
+
+# Among other things, this dispenses with the return(), concievably speeding up the code.
+# Recall that in R, the last value computed by a function is automatically returned anyway,
+# without a return() call. 
+# However, the time savings here are really small and rarely matter,
+# And again, my personal belief is that including the return() call is clearer.
