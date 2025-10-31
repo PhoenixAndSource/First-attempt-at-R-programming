@@ -103,6 +103,13 @@ merge2fy <- function(fy1,fy2) {
       consname <- paste(names(fy)[[2]],"cons",sep="")
       restname <- paste(names(fy)[[2]]," sound", sep="")
       tonename <- paste(names(fy)[[2]]," tone",sept="")
-      names(tmpdf) <- c()
+      names(tmpdf) <- c("Ch char",consname,restname,toename)
+      # need to use merge(), not cbind(), due to possibly different 
+      # ordering of fy, outdf
+      outdf <- merge(outdf,tmpdf)
     }
+    return(outdf)
 }
+
+# separate romanized pronunciation pronun into intitial consonant, is any,
+# the remainder of the sound, and the tone, if any
