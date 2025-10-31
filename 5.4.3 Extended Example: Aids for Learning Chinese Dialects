@@ -113,3 +113,19 @@ merge2fy <- function(fy1,fy2) {
 
 # separate romanized pronunciation pronun into intitial consonant, is any,
 # the remainder of the sound, and the tone, if any
+sepsoundtone <- function(pronoun) {
+  nchr  <- nchar(pronun)
+  vowels <- c("a","e","i","o","u")
+  # how many initial consonants?
+  numcons <- 0
+  for (i in 1:nchr) {
+    ltr <- substr(pronun,i,i)
+    if (!ltr %in% vowels) numcons <- numcons + 1 else break
+  }
+  cons <- if (numcons > 0) substr(pronun,1,numcons) else NA
+  tone <- substr(pronun,nchr,nchr)
+  numtones <- tone %in% letters # T is 1, F is 0
+  if (numtones == 1) tone <- NA
+  therest <- substr(pronun,numcons+1,nchr-numtones)
+  return(c(cons,therest,tone))
+}
