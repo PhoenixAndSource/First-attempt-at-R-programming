@@ -1,0 +1,49 @@
+# Lists can be recursive, meaning that you can have lists within lists.
+# Here's an example:
+
+> b <- list(u = 5, v = 12)
+> c <- list(w = 13)
+> a <- list(b,c)
+> a
+[[1]]
+[[1]]$u
+[1] 5
+
+[[1]]$v
+[1] 12
+
+[[2]]
+[[2]]$w
+[1] 13
+
+> length(a)
+[1] 2
+
+# This code makes a into a two-component list, with each component itself also being a list.
+# The concatenate functioin c() has an optional argument recursive, 
+# which controls whether flattening occurs when recursive lists are combined.
+
+> c(list(a=1,b=2,c=list(d=5,e=9)))
+$a
+[1] 1
+
+$b
+[1] 2
+
+$c
+$c$d
+[1] 5
+
+$c$e
+[1] 9
+> c(list(a=1,b=2,c=list(d=5,e=9)),recursive=T)
+  a  b  c.d  c.e
+  1  2    5    9
+
+# In the first case, we accepted the default value of recursive, which is FALSE, and obtained a recursive list,
+# with the c component of the main list itself being another list.
+# In the second call, with recursive set to TRUE, we got a single list as a result; 
+# only the names look recursive. (It's odd that setting recursive to TRUE gives a nonrecursive list.)
+# Recall that our first example of lists consisted of an employee database.
+# I mentioned that since each employee was represented as a list, the entire database would be a list of lists.
+# That is a concrete example of recursive lists.
