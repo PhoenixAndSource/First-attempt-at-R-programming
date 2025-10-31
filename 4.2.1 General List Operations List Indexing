@@ -1,0 +1,68 @@
+# Now that you've seen a simple example of creating a list,
+# Let's look at how to access and work with lists.
+
+# 4.2.1 List Indexing
+# You can access a list component in several different ways:
+
+> j$salary
+[1] 55000
+> j[["salary"]]
+[1] 55000
+> j[[2]]
+[1] 55000
+
+# We can refer to list components by their numerical indices, 
+# treating the list as a vector.
+# However, note that in this case,
+# we use double brackets instead of single ones.
+
+# So there are three ways to access an individual component c of a list 1st 
+# and return it in the data type of c:
+
+# - 1st$c
+# - 1st[["c"]]
+# - 1st[[i]], where i is the index of c within 1st
+
+# Each of these is useful in different contexts, as you will see in subsequent examples. 
+# But note the qualifying phrase, "return it in the data type of c."
+# An alternative to the second and third techniques listed is to use single brackets rather than double brackets:
+
+# - 1st["c"]
+# - 1st[i], where i is the index of c within 1st.
+
+# Both single-bracket and double-bracket indexing access list elements in vector-index fashion,
+# But there is an important difference from ordinary (atomic) vector indexing.
+# If single brackets [] are used, the result is another list
+# a sublist of the original.
+# for instance, continuing the preceding example, we have this:
+
+> j[1:2]
+$name
+[1] "Joe"
+
+$salary
+[1] 55000
+> j2 <- j[2]
+> j2
+$salary
+[1] 55000
+> class(j2)
+[1] "list"
+> str(j2)
+List of 1
+ $ salary: num 55000
+
+# The subsetting operation returned another list consisting of the first two components of the original list j.
+# Note that the word returned makes sense here, since index brackets are fuctions.
+# This is similar to other cases you've seen for operators that do not at first appear to be functions, such as +.
+# By contrast, you can use double brackets [[]] for referencing only a single component,
+# with the result having the type of that component.
+
+> j[[1:2]]
+Error in j[[1:2]] : subscript out of bounds
+> j2a <- j[[2]]
+> j2a
+[1] 55000
+> class(j2a)
+[1] "numeric"
+
