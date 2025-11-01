@@ -1,0 +1,126 @@
+# R functions are first-class objects (of the class "function", of course), 
+# meaning that they can be used for the most part just like other objects.
+# This is seen in the syntax of function creation:
+
+> g <- function(x) {
++    return(x+1)
++ }
+
+# Here, function() is a built-in R function whose job is to create functions!
+# On the right-hand side, there are really two arguments to function():
+# The first is the formal argument list for the function we're creating––
+# here, just x––and the second is the body of that function––here, 
+# just the single statement return(x+1).
+# That second argument must be of class "expression". So,
+# the point is that the right-hand side creates a function object,
+# which is then assigned to g.
+# by the way, even the "{" is a function, as you can verify by typing this:
+
+> ?"{"
+
+# Its job is the make a single unit of what could be several statements.
+# These two arguments to function() can later be accessed via the R functions formals() and body(), as follows:
+
+> formals(g)
+$x
+> body(g)
+{
+    return(x + 1)
+}
+
+# Recall that when using R in interactive mode, 
+# simply typing the name of an object results in printing that object to the screen.
+# Functions are no exception, since they are objects just like anything else.
+
+> g
+function(x) {
+  return(x+1)
+}
+
+# This is handy if you're using a function 
+# that you wrote but which you've forgotten the details of.
+# Printing out a function is also useful if you are not quite sure what an R library function does.
+# By looking at the code, you may understand it better.
+# For example, if you are not sure as to the exact behaviour of the graphics function abline(),
+# You could browse through its code to better understand how to use it.
+
+> abline
+function (a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL,
+    coef = NULL, untf = FALSE, ...)
+{
+    int_abline <- function(a, b, h, v, untf, col = par("col"),
+        lty = par("lty"), 1wd = par("1wd"), ...) .Internal(abline(a,
+        b, h, v, untf, col, lty, lwd, ...))
+    if (!is,null(reg)) {
+        if (!is.null(a))
+            warning("'a' is overridden by 'reg'")
+        a <- reg
+    }
+
+    if (is.object(a) || is.list(a)) {
+        p <- length(coefa <- as.vector(coef(a)))
+...
+...
+
+# If you wish to view a lengthy function in this way, run it through page():
+
+> page(abline)
+
+# An alternative is to edit it using the edit() function,
+# Which we'll discuss in Section 7.11.2.
+# Note though, that some of R's most fundamental built-in functions are written directly in C,
+# And thus they are not viewable in this manner. Here's an example:
+
+> sum
+function (..., na.rm = FALSE)  .Primitive("sum")
+
+# Since functions are objects, you can also assign them, 
+# use them as arguments to other functions, and so on.
+
+> f1 <- function(a,b) return(a+b)
+> f2 <- function(a,b) return(a-b)
+> f <- f1
+> f(3,2)
+[1] 5
+> f <- f2
+> f(3,2)
+[1] 1
+> g <- function(x) x^2
+> body(g) <- quote(2*x+3)
+> g
+function (x)
+2 * x + 3
+> g(8)
+[1] 19
+
+# And since functions are objects, you can loop through a list consisting of several functions.
+# This would be useful, for instance, if you wished to write a loop 
+# to plot a number of functions on the same graph, as follows:
+
+> g1 <- function(x) return(sin(x))
+> g2 <- function(x) return(sqrt(x^2+1))
+> g3 <- function(x) return(2*x-1)
+> plot(c(0,1),c(-1,1.5)) # prepare the graph, specifying X and Y ranges
+> for (f in c(g1,g2,g3)) plot(f,0,1,add=T) # add plot to existing graph
+
+# The functions formals() and body() can even be used as replacement
+# functions. We'll discuss replacement functions in Section 7.10, but for now, 
+# consider how you could change the body of a function by assignment:
+
+> g <- function(h,a,b) h(a,b)
+> body(g)  <- quote(2*x + 3)
+> g
+function (x)
+2 * x + 3
+> x <- 3
+> g(3)
+[1] 9
+
+# The reason quote() was needed is that technically, the body of a function has the class "call",
+# which is the class produced by quote().
+# Without the call the quote(), R would try to evaluate the quantity 2*x+3.
+# So if x had been defined and equal to 3, for example, we would assign 9 to the body of g(),
+# certainly not what we want. By the way, since * and + are functions (as discussed in Section 2.4.1),
+# As a language object, 2*x+3 is indeed a call––in fact, 
+# it is one function call nested within another.
+
