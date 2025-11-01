@@ -1,0 +1,32 @@
+In section 5.1.2, we read in a data set from a file named exams:
+
+> testscores <- read.table("exams",header=TRUE)
+
+# The argument header=TRUE tells R that we have a header line,
+# so R should not count that first line in the file as data.
+# This is an example of the use of named arguments.
+# Here are the first few lines of the function:
+
+> read.table
+function (file, header = FALSE, sep = "", quote = "\"'", dec = ",",
+    row.names, col.names, as.is = !stringsAsFactors, na.strings = "NA",
+    colClasses = NA, nrows = -1, skip = 0, check.names = TRUE,
+    fill = !blank.lines.skip, strip.white = FALSE, flush = FALSE,
+    stringsAsFactors = default.stringsAsFactors(), encoding = "unknown")
+{
+    if (is.character(file)) {
+        file <- file(file, "r")
+        on.exit(close(file))
+...
+...
+
+# The second formal argument is named header.
+# The = FALSE field means that this argument is optional, 
+# and if we don't specify it, the default value will be FALSE.
+# If we don't want the default value, we must name the argument in our call:
+
+> testscores <- read.table("exams",header=TRUE)
+
+# Hence the terminology named argument.
+# Note, though, that because R uses lazy evaluation––it does not evaluate and expression until/unless it needs to––
+# The named argument may not actually be used.
