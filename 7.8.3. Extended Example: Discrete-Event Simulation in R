@@ -354,6 +354,3 @@ sim$evnts <<- rbind(before,newevnt,after)
 # Now we have extracted the events in the event list whose times are earlier than that of evnt and stored them in before.
 # We also constructed a similar set in after for the events whose times are later than that of newevnt.
 # we then use rbind() to put all these together in the proper order.
-
-
-}
