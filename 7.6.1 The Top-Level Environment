@@ -1,0 +1,38 @@
+# Consider this example:
+
+> w <- 12
+> f <- function(y) {
++    d <- 8
++    h <- function() {
++      return(d*(w+y))
++    }
++    return(h())
++ }
+> environment(f
+<environment: R_GlobalEnv>
+
+# Here, the function f() is created at the top level––that is, 
+# at the interpreter command prompt––
+# and thus has the top-level environment, which in R output is referred to as R_GlobalEnv 
+# but which confusingly you refer to in R code as .GlobalEnv.
+# If you run an R program as a batch file,
+# that is considered top level, too.
+
+# The function 1s() lists the objects of an environment.
+# If you call it at the top level, you get the top-level environment.
+# Let's try it with our example code:
+
+> ls()
+[1] "f" "w"
+
+# As you can see, the top-level environment here includes the variable w,
+# which is actually used within f(). Note that f() is here too,
+# As functions are indeed objects and we did create it at the top level.
+# At levels other than the top, ls() works a little differently, as you'll see in Section 7.6.3.
+# You get a bit more information from ls.str():
+
+> ls.str()
+f : function (y)
+w : num 12
+
+# Next, we'll look at how w and other variables come into play within f().
