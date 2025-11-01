@@ -1,0 +1,70 @@
+# 7.2 Arithmetic and Boolean Operators and Values
+# Table 7-1: Basic R Operators
+
+Operation  Description
+x + y      Addition
+x - y      Subtraction
+x * y      Multiplication
+x / y      Division
+x ^ y      Exponentiation
+x %% y     Modular arithmetic
+x %/% y    Integer division
+x == y     Test for equality
+x <= y     Test for less than or equal to
+x >= y     Test for greater than or equal to
+x %% y     Boolean AND for scalars
+x || y     Boolean OR for scalars
+x & y      Boolean AND for vectors (vector x,y,result)
+x | y      Boolean OR for vectors (vector x,y,result)
+!x         Boolean negation
+
+# Though R ostensibly has no scalar types, with scalars being treated as one-element vectors,
+# We see the exception in Table 7-1: 
+# There are different Boolean operators for the scalar and vector cases.
+# This may seem odd, but a simple example will demonstrate the need for such a distinction.
+
+> x
+[1]  TRUE  FALSE  TRUE
+> y
+[1]  TRUE  TRUE  FALSE
+> x & y
+[1]  TRUE  FALSE  FALSE
+> x[1] && y[1]
+[1] TRUE
+> x %% y  # looks at just tthe first elements of each vector
+[1]  TRUE
+> if (x[1] && y[1]) print("both TRUE")
+[1] "both TRUE"
+> if (x & y) print("both TRUE")
+[1] "both TRUE"
+Warning message:
+In if (x & y) print("both TRUE") :
+  the condition has length > 1 and only the first element will be used
+
+# The central point is that in evaluating an if,
+# we need a single Boolean,
+# not a vector of Booleans, hence the warning seen in the preceding example,
+# As well as the need for having both the & and the && operators.
+# The Boolean values TRUE and FALSE can be abbreviated as T and F
+# (both must be capitalized).
+# These values change to 1 and 0 in arithmetic expressions:
+
+> 1 < 2
+[1] TRUE
+> (1 < 2) * (3 < 4)
+[1] 1
+> (1 < 2) * (3 < 4) * (5 < 1)
+[1] 0
+> (1 > 2) == TRUE
+[1] TRUE
+> (1 < 2) == 1
+[1] TRUE
+
+# In the second computation, for instance, the comparison 1 < 2
+# returns TRUE, and 3 < 4 yields TRUE as well. Both values are treated as 1 values,
+# so the product is 1.
+
+# On the second computation, for instance, the comparison 1 < 2 returns TRUE,
+# and 3 < 4 yields TRUE as well. Both values are treated as 1 values, so the product is 1.
+# On the surface, R functions look similar to those of C,Java, and so on.
+# However, they have much more of a functional programming flavor, which has direct implications for the R programmer.
