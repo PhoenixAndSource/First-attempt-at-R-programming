@@ -1,0 +1,72 @@
+# R does not have variables corresponding to pointers or references like those of say, the C language,
+# This can make programming more difficult in some cases,
+# (as of this writing, the current version or R has an experimental feature called reference classes, 
+# which may reduce the difficulty.)
+# For example, you cannot write a function that directly changes its arguments. 
+# In Python, for instance, you can do this:
+
+>>> x = [13,5,12]
+>>> x.sort()
+>>> x
+[5,12,13]
+
+# Here, the value of x, the argument to sort(), changed.
+# By contrast, here's how it works in R:
+
+> x <- c(13,5,12)
+> sort(x)
+[1] 5 12 13
+> x
+[1] 13 5 12
+
+# The argument to sort() does not change.
+# If we do want x to change in this R code,
+# the solution is to reassign the arguments:
+
+> x <- sort(x)
+> x
+[1] 5 12 13
+
+# What if our function has several variables of output?
+# A solution is to gather them together into a list, call the function with this list
+# as an argument, have the function return the list, and then reassign tothe original list.
+# An example is the following function, which determines the indices of odd and even numbers in a vector of integers:
+
+> oddsevens
+function(v){
+  odds <- which(v %% 2 == 1)
+  evens <- which(v %% 2 == 0)
+  list(o=odds,e=evens)
+}
+
+# In general, our function f() changes variables x and y.
+# We might store them in a list lxy, which would then be our argument to f().
+# The code, both called and calling, might have a pattern like this:
+
+f <- function(lxxyy) {
+  ...
+  lxxyy$x <- ...
+  lxxyy$y <- ...
+  return(lxxyy)
+}
+
+# set x and y
+lxy$x <- ...
+lxy$y <- ...
+lxy <- f(lxy)
+# use new x and y
+... <- lxy$x
+... <- lxy$y
+
+# However, this may become unwieldy if your function will change many variables.
+# It can be especially awkward if your variables, say x and y in the example,
+# are themselves lists, resulting in a return value consisting of lists within a list.
+# This can still be handled, but it makes the code more syntactically complex and harder to read.
+
+# Alternatives include the use of global variables, which we will look at in Section 7.8.4,
+# and the new R reference classes mentioned earlier.
+
+# Another class of applications in which lack of pointers causes difficulties is that of treelike data structures.
+# C code normally makes heavy use of pointers for these kinds of structures.
+# One solution for R is to revert to what was done in the "good old days" before C,
+# When programmers formed their own "pointers" as vector indices. See section 7.9.2 for an example.
