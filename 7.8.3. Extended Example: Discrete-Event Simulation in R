@@ -298,3 +298,62 @@ mm1glbls$srvq <<- mm1glbls$srvq[-1]
       schedevnt(srvdonetime,"srvdone",list(arrvtime=mm1glbls$srvq[1]))
     }
 }
+
+# First, this code does some bookkeeping, updating the totals of number of jobs completed and wait time.
+# It then removes this newly completed jobs from the server queue.
+# Finally, it checks if there are still jobs in the queue and if so, calls schedevnt()
+# to arrange for the service of the one at the head.
+
+# What about the DES library code itself? First note that the simulation state,
+# consisting of the current simulated time and the event list, has been placed in an R list structure, sim.
+# This was done in order to encapsulate all the main information into one package, which in R,
+# typically means using a list. The sim list has been made a global variable.
+
+# As mentioned, a key issue in writing a DES library is the event list. This 
+# Code implements it as a data frame, sim$evnts.
+# Each row of the data frame corresponds to one scheduled event, 
+# with information about the event time, 
+# a character string representing the event type (say arrival or service completion),
+# and any application-specific data the programmer wishes to add.
+# Since each row consists of both numeric and character data,
+# it was natural to choose a data frame for repersenting this event list.
+# The rows of the data frame are in ascending order of event time, 
+# which is contained in the first column.
+
+# The main loop of the simulation is in dosim() of the DES library code, beginning at line 91:
+
+while(sim$currtime < maxsimtime) {
+  head <- getnextevnt()
+  sim$currtime <<- head$evnttime # update current simulated time
+  reactevnt(head)  # process this event
+  if (dbg)  print(sim)
+}
+
+# First getnextevnt() is called to remove the head (the earliest event) from the event list.
+# (Note the side effect: The event list changes.) 
+# Then the current simulated time is updated according to the scheduled time in the head event.
+# Finally, the programmer-supplied function reactevnt() 
+# is called to process the event (as seen in the M/M/1 code discussed earlier).
+
+# The main potential advantage of using a data frame as our structure here 
+# is that it enables us to maintain the event list in ascending order
+# by time via a binary search operation by event time.
+# This is done in line 31 within schedevnt(),
+# The function that inserts a newly created event into the event list:
+
+inspt <- binsearch((sim$evnts)$evnttime,evnttm)
+
+# Here we wish to insert a newly created event into the event list,
+# and the fact that we are working with a vector enables the use of a fast binary search.
+# (As noted in the comments in the code, though, this really should be implemented in C for good performance.)
+
+# A later line in schedevnt() is a good example of the use of rbind():
+
+sim$evnts <<- rbind(before,newevnt,after)
+
+# Now we have extracted the events in the event list whose times are earlier than that of evnt and stored them in before.
+# We also constructed a similar set in after for the events whose times are later than that of newevnt.
+# we then use rbind() to put all these together in the proper order.
+
+
+}
