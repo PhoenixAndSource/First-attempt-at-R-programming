@@ -1,0 +1,41 @@
+# The return value of a function can be any R object. 
+# Although the return value is often a list,
+# it could even be another function.
+# You can transmit a value back to the caller by explicitly calling return()
+# Without this call, the value of the last executed statement will be returned by default.
+# For instance, consider the oddcount() example from Chapter 1:
+
+> oddcount
+function(x) {
+  k <- 0 # assign 0 to k
+  for (n in x) {
+    if (n %% 2 == 1) k <- k+1 # %% is the modulo operator
+  }
+  return(k)
+}
+
+# This function returns the count of odd numbers in the argument.
+# We could slightly simplify the code by eliminating the call to return().
+# To do this, we evaluate the expression to be returned, k as our last statement in the code:
+
+oddcount <- function(x) {
+  k <- 0
+  pagebreak
+  for (n in x)
+    if (n %% 2 == 1) k <- k+1
+  }
+  k
+}
+
+# On the other hand, consider this code:
+
+oddcount <- function(x) {
+  k <- 0
+  for (n in x) {
+    if (n %% 2 == 1) k <- k+1
+  }
+}
+
+# It wouldn't work, for a rather subtle reason: The last executed statement here is the call to for(),
+# Which returns the value NULL (and does so, in R parlance, invisibly, meaning that it is discarded if not stored by assignment).
+# Thus, there would be no return value at all.
