@@ -1,0 +1,14 @@
+# Since the return value can be any R object, you can return complex objects.
+# Here is an example of a function being returned:
+
+> g
+function() {
+  t <- function(x) return(x^2)
+  return(t)
+}
+
+> g()
+function(x) return(x^2)
+<environment: 0x8aafbc0>
+
+# If your function has multiple return values, place them in a list or other container.
