@@ -1,0 +1,100 @@
+# R does not directly support iteration over nonvector sets,
+# But there are a couple of indirect yet easy ways to accomplish it:
+
+# Use lapply(), assuming that the iterations of the loop are independent of each other, 
+# thus allowing them to be performed in any order.
+
+# Use get(). As its name implies, 
+# this function takes as an argument a character string 
+# representing the name of some object and returns the object of that name.
+# It sounds simple, but get() is a very powerful function.
+
+# Let's look at an example of using get().
+# Say we have two matrices, u and v, containing statistical data,
+# and we wish to apply R's linear regression function lm() to each of them.
+
+> u
+    [,1] [,2]
+[1,]   1    1
+[2,]   2    2
+[3,]   3    4
+> v
+    [,1] [,2]
+[1,]   8   15
+[2,]  12   10
+[3,]  20    2
+> for (m in c("u","v")) {
++    z <- get(m)
++    print(lm(z[,2] ~ z[,1]))
++ }
+
+Call:
+lm(formula = z[, 2] ~ z[, 1])
+
+Coefficients:
+(Intercept)      z[, 1]
+    -0.6667      1.5000
+
+# Here, m was first set to u. Then these lines assign the matrix u to z,
+# which allows the call to 1m() on u:
+
+z <- get(m)
+print(1m(z[,2] ~ z[,1]))
+
+# The same then occurs with v.
+
+# 7.1.3 if-else
+# The syntax for if-else looks like this:
+# if (r == 4) {
+     x <- 1
+     } else {
+        x <- 3
+        y <- 4
+     }
+# It looks simple, but there is an important subtlety here.
+# The if section consists of just a single statement:
+
+x <- 1
+
+# So, you might guess that the braces around that statement are not necessary.
+# However, they are indeed needed.
+
+# The right brace before the else is used by the 
+# R parser to deduce that this is an if-else rather than just an if.
+# In interactive mode, without braces,
+# The parser would mistakenly think the latter and act accordingly,
+# which is not what we want.
+
+# An if-else statement works as a function call,
+# and as such, it returns the last value assigned.
+
+v <- if (cond) expression1 else expression2
+
+# This will set v to the result of expression1 or expression2, depending on whether cond is true.
+# You can use this fact to compact your code. Here's a simple example:
+
+> x <- 2
+> y <- if(x == 2) x else x+1
+> y
+[1] 2
+> x <- 3
+> y <- if(x ==2) x else x+1
+> y
+[1] 4
+
+# Without taking this tack, the code
+
+y <- if(x == 2) x else x+1
+
+# would instead consist of the somewhat more cluttered
+
+if(x == 2) y <- x else y <- x+1
+
+# In more complex examples, expression1 and/or expression2 could be function calls.
+# On the other hand, you probably should not let compactness take priority over clarity.
+
+# When working with vectors, use the ifelse() function, as discussed in Chapter 2,
+# As it will likely produce faster code.
+
+
+}
