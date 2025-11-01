@@ -1,0 +1,4 @@
+# A function––formally referred to as a closure in the R documentation––
+# consists not only of its arguments and body but also of its environment.
+# The latter is made up of the collection of objects present at the time the function is created.
+# An understanding of how environments work in R is essential for writing effective R functions.
