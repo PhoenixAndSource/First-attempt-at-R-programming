@@ -1,0 +1,28 @@
+# The prevailing R idiom is to avoid explicit calls to return().
+# One of the reasons cited for this approach is that calling that function
+# lengthens execution time.
+
+# However, unless the function is very short, the time saved is negligible,
+# so this might not be the most compelling reason to refraing from using return().
+# But it usually isn't needed nonetheless.
+
+# Consider our second example from the preceding section:
+
+oddcount <- function(x) {
+  k <- 0
+  for (n in x) {
+    if (n %% 2 == 1) k <- k+1
+  }
+  k
+}
+
+# Here, we simply ended with a statement listing the expression to be returned––
+# In this case, k. A call to return() wasn't necessary.
+# Code in this book usually does include a call to return(), for clarity for gefinners,
+# But it is customary to omit it.
+
+# Good software design, however, should mean that you can glance through a function's code 
+# and immediately spot the various points at which control is returned to the caller.
+# The easiest way to accomplish this is to use an explicit return() call 
+# in all lines in the middle of the code that cause a return.
+# You can still omit a return() call at the end of the function if you wish.)
