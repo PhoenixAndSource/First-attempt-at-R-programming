@@ -1,0 +1,145 @@
+# Let's first get an intuitive over view of how scope works in R and then we'll relate it to environments.
+
+# If we were working with the C language (as usual, background in C is not assumed),
+# we would say that the variable w in the previous section is global to f(),
+# while d is local to f(). Things are similar in R, but R is more hierachical.
+# In C, we would not have functions defined within functions, as we have with h() inside f() in our example.
+# Yet, since functions are objects, it is possible––
+# and sometimes desirable from the point of view of the encapsulation goal of object-oriented programming
+# to define a function within a function; we are simply creating an object, which we can do anywhere.
+
+# Here, we have h() being local to f(), just like d.
+# In such a situation, it makes sense for scope to be heirarchical.
+# Thus, R is set up so that d, which is local to f(), 
+# is in turn global to h().
+# The same is true for y, as arguments are considered locals in R.
+
+# Similarly, the heirarchical nature of scope implies that since w is global to f(),
+# it is global to h() as well. Indeed, we do use w within h().
+# In terms of environments then, h()'s environment consists of 
+# whatever objects are defined at the time h() comes into existence;
+# that is, at the time that this assignment is executed:
+
+h <- function() {
+  return(d*(w+y))
+}
+
+# (If f() is called multiple times, h() will come into existence multiple times, 
+# going out of existence each time f() returns,)
+
+# What then, will be in h()'s environment? Well, at the time h() is created,
+# there are the objects d and y created within f(),plus f()'s environment (w).
+
+# In other words, if one function is defined within another,
+# then that inner function's environment consists of the environment of the outer one,
+# plus watever locals have been created so far within the outer one.
+# with multiple nesting of functions, you have a nested sequence of larger and larger environments,
+# with the "root" consisting of the top-level objects. Let's try out the code:
+
+> f(2)
+[1] 112
+
+# What happened? The call f(2) resulted in setting the local variable d to 8, 
+# followed by the call h(). The latter evaluated d*(w+y)––that is, 8*(12+2)––
+# giving us 112.
+
+# Note carefully the role of w. The R interpreter found that there was no local variable of that name,
+# so it ascended to the next higher level–– in this case, the top level–– where it is found a variable w with value 12.
+# Keep in mind that h() is local to f() and invisible at the top level.
+
+> h
+Error: object 'h' not found
+
+# It's possible (though not desirable) to deliberately allow name conflicts in this hierarchy.
+# In our example, for instance, we could have a local variable d within h(),
+# conflicting with the one in f().
+# In such a situation, the innermost environment is used first. 
+# In this case, a reference to d within h() would refer to h()'s d, not f()'s.
+
+# Environments created by inheritance in this manner are generally referred to by their memory locations.
+# Here is what happened after adding a print statement to f() using edit(), not shown here)
+# And then running the code:
+
+> f
+function(y) {
+  d <- 8
+  h <- function() {
+    return(d*(w+y))
+  }
+  print(environment(h))
+  return(h())
+}
+> f(2)
+<environment: 0x875753c>
+[1] 112
+
+# Compare all this to the situation in which the functions are not nested:
+
+> f
+function(y) {
+  d <- 8
+  return(h())
+}
+
+> h
+function() {
+    return(d*(w+y))
+}
+
+# The result is as follows:
+
+> f(5)
+Error in h() : object 'd' not found
+
+# This does not work, as d is no longer in the environment of h(),
+# Because h() is defined at the top level. Thus, an error is generated.
+# Worse, if by happenstance there had been some unrelated variable d in the top-level environment
+# we would not get an error message but instead would have incorrect results.
+
+# You might wonder why R didn't complain about the lack of y 
+# in the alternate definition of h() in the preceding example.
+# As mentioned earlier, R doesn't evaluate a variable 
+# until it need it under a policy called lazy evaluation.
+# In this case, R had already encountered an error with d 
+# and thus never got to the point where it would try to evaluate y.
+
+# the fix is to pass d and y as arguments:
+
+> f
+function(y) {
+  d <- 8
+  return(h(d,y))
+}
+> h
+function(dee,yyy) {
+  return(dee*(w+yyy))
+}
+> f(2)
+[1] 112
+
+# Okay, let's look at one last variation:
+
+> f
+function(y,ftn) {
+  d <- 8
+  print(environment(ftn))
+  return(ftn(d,y))
+}
+> h
+function(dee,yyy) {
+  return(ftn(d,y))
+}
+
+> w <- 12
+> f(3,h)
+<environment: R_GlobalEnv>
+[1] 120
+
+# When f() executed, the formal argument ftn was matched by the actual argument h.
+# Since arguments are treated as locals, you might guess that ftn 
+# could have a different environment than top level.
+# But as discussed, a closure includes environment, 
+# and thus ftn has h's environment.
+
+# Note carefully that all the examples so far involving nonlocal variables
+# are for reads, not writes. The case of writes is crucial, and it will be covered in Section 7.8.1
