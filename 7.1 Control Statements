@@ -1,0 +1,137 @@
+# Control statements in R look very similar to those of the 
+# ALGOL-descendant family languages mentioned above.
+# Here, we'll look at loops and if-else statements.
+
+#7.1.1 Loops
+
+# In section 1.3, we defined the oddcount() function. In that function,
+# the following line should have been instantly recognized by Python programmers:
+
+for (n in x) {
+
+# It means that there will be one iteration of the loop for each component of the vector x,
+# with n taking on the values of those components–– in the first iteration, n = x[1];
+# In the second iteration, n = x[2]; and so on.
+# For example, the following code uses this structure to output the square of every element in a vector:
+
+> x <- c(5,12,13)
+> for (n in x) print(n^2)
+[1] 25
+[1] 144
+[1] 169
+
+# C-style looping with while and repeat is also available, complete with break,
+# a statement that causes control to leave the loop. Here is an example that uses all three:
+
+> i <-1
+> while (i <= 10) i <- i+4
+> i
+[1] 13
+>
+> i <- 1
+> while(TRUE) { # similar loop to above
++    i <- i+4
++    if (i > 10) break
++ }
+> i
+[1] 13
+>
+> i <- 1
+> repeat { # again similar
++    i <- i+4
++    if (i > 10) break
++ }
+> i
+[1] 13
+
+# In the first code snippet, the variable i took on the values 1,5,9, and 13 as the loop went through its iterations.
+# In that last case, the condition i <= 10 failed, so the break took hold and we left the loop.
+
+# This code shows three different ways of accomplishing the same thing, 
+# with break playing a key role in the second an d third ways.
+
+# Note that repeat has no Boolean exit condition. You must use break (or something like return()).
+# Of course, break can be used with for loops, too.
+
+# Another useful statement is next, which instructs the interpreter 
+# to skip the remainder of the current iteration of the loop and proceed directly to the next one.
+
+# This provides a way to avoid using complexly nested if-then-else constructs,
+# which can make the code confusing.
+# Let's take a look at an example that uses next.
+# The following code comes from an extended example in Chapter 8:
+
+sim <- function(nreps) {
+    commdata <- list()
+    commdata$countabsamecomm <- 0
+    for (rep in 1:nreps) {
+      commdata$whosleft <- 1:20
+      commdadta$numabchosen <- 0
+      commdata <- choosecomm(commdata,5)
+      if (commdata$numabchosen > 0) next
+      commdata <- choosecomm(commdata,4)
+      if (commdata$numabchosen > 0) next
+      commdata <- choosecomm(commdata,3)
+    }
+    print(commdata$countavsamecomm/nreps)
+}
+
+# There are next statements in lines 8 and 10. Let's see how they work 
+# and how they improve on the alternatives.
+# The two next statements occur within the loop that starts at line 4.
+# Thus, when the if condition holds in line 8, lines 9 through 11 will be skipped,
+# and control will transfer to line 4.
+# The situation in line 10 is similar.
+
+# Without using next, we would need to resort to nested if statements,
+# Something like these:
+
+sim <- function(nreps) {
+  commdata <- list()
+  commdata$countabsamecomm <- 0
+  for (rep in 1:nreps) {
+    commdata$whosleft <- 1:20
+    commdata$numabchosen <- 0
+    commdata <- choosecomm(commdata,5)
+    if (commdata$numabchosen == 0) {
+        commdata <- choosecomm(commdata,4)
+        if (commdata$numabchosen == 0)
+            commdasta <- choosecomm(commdata,3)
+        }
+    }
+    print(commdata$counttabsamecomm/nreps)
+}
+
+# Because this simple example has just two levels, 
+# it's not too bad,
+# However, nested if statements can become confusing when you have more levels.
+# The for construct works on any vector, regardless of mode.
+# You can loop over a vector of filenames, fort instance.
+# Say we have a file named file1 with the following contents:
+
+1
+2
+3
+4
+5
+6
+
+# We also have a file named file2 with these contents:
+
+5
+12
+13
+
+# The following loop reads and prints each of these files.
+# We use the scan() function here to read in a file of numbers 
+# And store those values in a vector.
+# We'll take more about scan() in Chapter 10.
+
+> for (fn in c("file1","file2")) print(scan(fn))
+Read 6 items
+[1] 1 2 3 4 5 6
+Read 3 items
+[1] 5 12 13
+
+# So, fn is first set to file1, and the file of that name is read in and printed out.
+# Then the same thing happens for file2.
