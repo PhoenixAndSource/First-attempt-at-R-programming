@@ -272,3 +272,29 @@ mm1prntrslts <- function() {
   print(mm1glbs$totwait/mm1glbls$njobsdone)
 }
 }
+
+# To see how all this works, take a look at the M/M/1 application code.
+# There, we have set up a global variable, mm1glbls, which contains variables relevant to the M/M/1 code,
+# Such as mm1glbls$totwait, the running total of the wait time of all jobs simulated so far.
+# As you can see, the superassignment operator is used to write to such variables, as in this statement:
+
+mm1glbls$srvq <<- mm1glbls$srvq[-1]
+
+# let's look at mm1reactevnt() to see how the simulation works, focusing on
+# the code portion in which a "service done" event is handled.
+
+} else {  # service done
+    # process job that just finished
+    # do accounting
+    mm1glbls$njobsdone <<- mm1glbls$njobsdone + 1
+    mm1glbs$totwait <<-
+      mm1glbls$totwait + sim$currtime - head$arrvtime
+    # remove this job from queue
+    mm1glbls$srvq <<- mm1glbls$srvq[-1]
+    # more still in the queue?
+    if (length(mmiglbls$srvq) > 0) {
+      # schedule new service
+      srvdonetime <- sim$currtime + rexp(1,mm1glbls$srvrate)
+      schedevnt(srvdonetime,"srvdone",list(arrvtime=mm1glbls$srvq[1]))
+    }
+}
