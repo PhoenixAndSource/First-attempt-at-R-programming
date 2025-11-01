@@ -1,0 +1,26 @@
+# Without arguments, a call to ls() from within a function 
+# returns the names of the current local variables (including arguments).
+# With the envir argument, it will print the names 
+# of the locals of any frame in the call chain.
+# Here's an example:
+
+> f
+function(y) {
+  d <- 8
+  return(h(d,y))
+}
+> h
+function(dee,yyy) {
+  print(ls())
+  print(ls(envir=parent.frame(n=1)))
+  return(dee*(w+yyy))
+}
+
+> f(2)
+[1] "dee" "yyy"
+[1] "d" "y"
+[1] 112
+
+# With parent.frame(), the argument n specifies how many frames to go up in the call chain.
+# Here, we were in the midst of executing h(), which had been called from f(),
+# so specifying n = 1 gives us f()'s frame, and thus we get its locals.
