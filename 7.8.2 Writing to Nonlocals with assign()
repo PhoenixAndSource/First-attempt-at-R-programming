@@ -1,0 +1,45 @@
+# You can also use the assign() function to write to upper-level variables.
+# Here's an altered version of the previous example:
+
+> two
+function(u) {
+  assign("u",2*u,pos=,GlobalEnv)
+  z <- 2*z
+}
+> two(x)
+> x
+[1] 1
+> u
+[1] 2
+
+# Here, we replaced the superassignment operator with a call to assign().
+# That call instructs R to assign the value 2*u (this is the local u) to a variable u 
+# further up the call stack, specifically in the top-level environment.
+# In this case, that environment is only one call level higher, 
+# But if we had a chain of calls, it could be much further up.
+
+# The fact that you reference variables using character strings in assign()
+# can come in handy. Recall the example in Chapter 5 concerning 
+# analysis of hiring patterns of various large corporations.
+# We wanted to form a subdata frame for each firm, 
+# extracted from the overall data frame, all2006.
+# For instance, consider this call:
+
+makecorpdfs(c("MICROSOFT CORPORATION","ms","INTEL CORPORATION","intel","
+  SUN MICROSYSTEMS, INC.","sun","GOOGLE INC.","google"))
+
+# This would first extract all Microsoft records from the overall data frame,
+# naming the resulting subdata frame ms2006. 
+# It would then create intel2006 for Intel, and so on.
+# Here is the code (changed to function form, for clarity):
+
+makecorpdfs <- function(corplist) {
+  for (i in  1:(length(corplist)/2)) {
+      corp <- corplist[2*i-1]
+      newdtf <- paste(corplist[2*i],"2006",sep="")
+      assign(newdtf,makecorp(corp),pos=.GlobalEnv)
+  }
+}
+
+# In the iteration i = 1, the code uses paste() to splice together the strings
+# "ms" and "2006", resulting in "ms2006", the desired name.
