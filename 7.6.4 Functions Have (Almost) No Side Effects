@@ -1,0 +1,39 @@
+# Yet another influence of the functional programming philosophy 
+# is that functions do not change nonlocal variables;
+# that is, generally, there are no side effects.
+# Roughly speaking, the code in a function has read access to its nonlocal variables,
+# but the action will affect only copies,
+# not the variables themselves.
+# Let's demonstrate this by adding some more code to our previous example.
+
+> w <- 12
+> f
+function(y) {
+  d <- 8
+  w <- w + 1
+  y <- y -2
+  print(w)
+  h <- function() {
+    return(d*(w+y))
+  }
+  return(h())
+}
+
+> t <- 4
+> f(t)
+[1] 13
+[1] 120
+> w
+[1] 12
+> t
+[1] 4
+
+# So, w at the top level did not change, even though it appeared to change within f().
+# Only a local copy of w, within f(), changed. Similarly, the top-level variable t didn't change,
+# even though its associated formal argument y did change.
+
+# Note: More precisely, references to the local w actually go to the same memory location as the global one
+# until the value of the local changes. In the case, a new memory location is used.
+
+# An important exception to this read-only nature of globals arises with the 
+# superassignment operator, which we'll discuss later in Section 7.8.1.
